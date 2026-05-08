@@ -1,0 +1,27 @@
+# Directorio de dependencias
+node_modules/
+
+# Directorio de salida de la compilación de TypeScript
+dist/
+
+# Archivos de logs y temporales
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de Node.js
+.env
+.env.*
+
+# Data files
+data/
