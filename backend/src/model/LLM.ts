@@ -1,9 +1,20 @@
-import ollama from 'ollama'
+import { Response } from './types/Response.js'
+
+type Message = {
+    role: string,
+    content: string
+}
+
+type FormatType = {
+    [key: string]: string | string[] | Boolean | number | FormatType
+}
 
 type LLMConfig = {
     model: string,
-    prompt: string,
-    format?: string
+    systemPrompt: string,
+    format?: FormatType,
+    reasoning?: { effort: 'low' | 'medium' | 'high' },
+    text?: any
 }
 
 abstract class LLM {
@@ -11,7 +22,8 @@ abstract class LLM {
         protected readonly config: LLMConfig
     ) { }
 
-    public abstract getResponse(content: string): Promise<string>
+    public abstract getResponse(prompt: string): Promise<string>
+    public abstract getSchemaResponse(prompt: string): Promise<Response>
 }
 
-export { LLM, LLMConfig }
+export { LLM, LLMConfig, FormatType, Message }

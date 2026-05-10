@@ -4,7 +4,7 @@ type Page = {
     content: string,
     url: string,
     childrenIds: string[] | null,
-    keywords: string[] | null
+    keywords: string[]
 }
 
 export { Page }

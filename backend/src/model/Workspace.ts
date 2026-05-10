@@ -10,6 +10,16 @@ class Workspace {
         private _pagesCache: Page[] = []
     ) { }
 
+    /*
+        GETTERS
+    */
+    get pagesCache(): Page[] | null {
+        return this._pagesCache
+    }
+
+    /*
+        PUBLIC METHODS    
+    */
     public async init() {
         this.pagesCachePath = await this.getPagesCachePath()
         if (!this.pagesCachePath) {
@@ -26,6 +36,14 @@ class Workspace {
         }
     }
 
+    public updatePagesCache(pages: Page[]) {
+        this._pagesCache = pages
+        this.updatePagesCacheFile(config.abspath)
+    }
+
+    /*
+        PRIVATE METHODS
+    */
     private async getPagesCachePath() {
         const pagesCacheDir = path.join(config.abspath, '..', 'data', 'pagesCache')
         const dirFiles = await fs.readdir(pagesCacheDir)
@@ -116,8 +134,13 @@ class Workspace {
         return blocks[0].slice(1).trim()
     }
 
-    private getPageUrl(path: string): string {
-        return `https://www.notion.so/${path.split('.md')[0]}`
+    private getPageUrl(filePath: string): string {
+        const fileName = path.basename(filePath)
+        const pageName = fileName
+            .split('.md')[0]
+            .split(' ')
+            .join('%')
+        return `https://www.notion.so/${pageName}`
     }
 
     private extractChildrenIds(blocks: string[]): string[] {
@@ -130,6 +153,10 @@ class Workspace {
 
     private async createPagesCacheFile(abspath: string): Promise<string> {
         const filePath = path.join(abspath, '..', 'data', 'pagesCache', 'pagesCache.json')
+
+        const dirPath = path.dirname(filePath)
+        await fs.mkdir(dirPath, { recursive: true })
+
         await fs.writeFile(
             filePath,
             JSON.stringify(this._pagesCache, null, 2),
@@ -148,11 +175,8 @@ class Workspace {
         }
     }
 
-    /*
-        GETTERS
-    */
-    get pagesCache(): Page[] | null {
-        return this._pagesCache
+    private async updatePagesCacheFile(abspath: string) {
+        await this.createPagesCacheFile(abspath)
     }
 }
 
