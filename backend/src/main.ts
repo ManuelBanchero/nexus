@@ -2,6 +2,7 @@ import { Workspace } from './model/Workspace.js'
 import { config } from './config/config.js'
 import { OpenAI } from './model/OpenAI.js'
 import { SearchEngine } from './model/SearchEngine.js'
+import { Trie } from './model/Trie.js'
 
 async function main() {
     // Config variables
@@ -28,7 +29,11 @@ async function main() {
     const workspace = new Workspace(config.workspacePath)
     await workspace.init()
 
+    const trie = new Trie()
+
     const searchEngine = new SearchEngine(ai, workspace)
+    searchEngine.createTrie()
+    console.log(searchEngine.search('matriz'))
 }
 
 main()
