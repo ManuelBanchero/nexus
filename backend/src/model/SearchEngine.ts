@@ -74,7 +74,24 @@ class SearchEngine {
         if (!pageIds)
             return { success: false, error: 'There are not pages with that word' }
 
-        return { success: true, data: pageIds }
+        return { success: true, data: this.getPagesByIds(pageIds) }
+    }
+
+    public getWordsWithPrefix(prefix: string): string[] {
+        return this.trie.wordsWithPrefix(prefix)
+    }
+
+    public getPagesByIds(ids: Set<string>): Page[] {
+        const pages: Page[] = []
+        for (const id of ids) {
+            const page: Page | undefined = this.workspace.getPageById(id)
+            page && pages.push(page)
+        }
+        return pages
+    }
+
+    public printTrie() {
+        this.trie.printRoot()
     }
 }
 

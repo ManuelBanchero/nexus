@@ -1,62 +1,38 @@
 import path from 'node:path'
-import dotenv from 'dotenv'
+import { systemPrompt, formatConfig } from './LLMConfig.js'
 
-dotenv.config()
+type FormatConfig = {
+    [key: string]: string | number | boolean | string[] | FormatConfig
+}
+
+type LLMConfig = {
+    model: string,
+    systemPrompt: string,
+    text?: Record<'format', FormatConfig>,
+    format?: FormatConfig
+}
 
 type Config = {
     abspath: string,
     workspacePath: string,
-    openAIKey?: string,
-    systemPrompt?: string,
-    formatConfig?: any
+    llmConfig: LLMConfig
 }
 
-const __dirname = import.meta.dirname
-const abspath = path.join(__dirname, '..')
+//const __dirname = '/Users/manuelbanchero/dev/projects/nexus/backend/src/config'
+//const abspath = path.join(__dirname, '..')
+const abspath = '/Users/manuelbanchero/dev/projects/nexus/backend/src'
 const workspacePath = path.join(abspath, '..', 'data', 'workspace')
-const openAIKey = process.env.OPEN_AI_API_KEY
-const systemPrompt = `
-        You are a rigorous semantic analyst for a search engine.
-        Your task is to analyze a Markdown file and extract highly relevant keywords to index its content, like SEO.
 
-        INSTRUCTIONS:
-        1. Distribution: Your analysis must include exact words from the content, direct synonyms, and related semantic concepts.
-        2. Length Limit: Each keyword must be a single word or a phrase of no more than three words.
-        3. Quantity: You must always generate exactly 20 keywords.
-        4. Language: All generated keywords and synonyms MUST be in the same language as the original Markdown content.
-        5. Noise Reduction: Ignore Markdown syntax, URLs, and code snippets. Focus only on semantic meaning.
-
-        RESTRICTIONS:
-        - Return ONLY a valid JSON object matching the requested schema.
-        - Do not include your thoughts, reasoning, or any introductory text.
-    `.trim()
-const formatConfig = {
-    "type": "json_schema",
-    "name": "keywords_schema",
-    "strict": true,
-    "schema": {
-        "type": "object",
-        "properties": {
-            "keywords": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                },
-                "minItems": 20,
-                "maxItems": 20
-            }
-        },
-        "required": [
-            "keywords"
-        ],
-        "additionalProperties": false
+const llmConfig: LLMConfig = {
+    model: 'gpt-4o-mini',
+    systemPrompt,
+    text: {
+        format: formatConfig
     }
 }
 
 export const config: Config = {
     abspath,
     workspacePath,
-    openAIKey,
-    systemPrompt,
-    formatConfig
+    llmConfig
 }

@@ -53,6 +53,35 @@ class Trie {
             : null
     }
 
+    public wordsWithPrefix(prefix: string) {
+        const prefixLowerCase = prefix.toLowerCase()
+        const words: string[] = []
+        let currentLevel = this.root
+
+        for (const char of prefixLowerCase) {
+            if (!currentLevel.children[char])
+                return []
+            currentLevel = currentLevel.children[char]
+        }
+        return this.searchLevel(currentLevel, prefixLowerCase, words)
+    }
+
+    private searchLevel(
+        currentLevel: TrieNode,
+        currentPrefix: string,
+        words: string[]
+    ) {
+        if (currentLevel.pageIds.size > 0)
+            words.push(currentPrefix)
+
+        const chars = Object.keys(currentLevel.children).sort()
+        for (const char of chars) {
+            this.searchLevel(currentLevel.children[char], currentPrefix + char, words)
+        }
+
+        return words
+    }
+
     public printRoot() {
         console.dir(this.root, { depth: null })
     }

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "execute": "tsx src/main.ts",
-    "build": "tsc && node dist/main.js",
+    "dev": "tsx watch src/bootstrap.ts",
+    "execute": "tsx src/bootstrap.ts",
+    "build": "tsc && node dist/bootstrap.js",
     "compiler": "npx tsc --watch --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

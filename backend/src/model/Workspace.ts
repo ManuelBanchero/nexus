@@ -24,11 +24,13 @@ class Workspace {
         this.pagesCachePath = await this.getPagesCachePath()
         if (!this.pagesCachePath) {
             console.log('Creating file content\n')
+
             await this.createPagesCache(this.fullWorkspacePath)
             const pagesCachePath = await this.createPagesCacheFile(config.abspath)
             this.pagesCachePath = pagesCachePath
         } else {
             console.log('Getting file content')
+
             const pagesCacheFileContent = await this.getPagesCacheContent()
             if (pagesCacheFileContent) {
                 this._pagesCache = pagesCacheFileContent
@@ -39,6 +41,10 @@ class Workspace {
     public updatePagesCache(pages: Page[]) {
         this._pagesCache = pages
         this.updatePagesCacheFile(config.abspath)
+    }
+
+    public getPageById(id: string): Page | undefined {
+        return this._pagesCache.find(page => page.id === id)
     }
 
     /*
@@ -144,11 +150,18 @@ class Workspace {
     }
 
     private extractChildrenIds(blocks: string[]): string[] {
-        const linkRegex = /(?<!\!)\[(.*?)\]\((.*?)\)/
+        const linkRegex = /(?<!\!)\[(.*?)\]\((.*?)\)/;
+
+        // The id is an 32 chars hex, and is before the .md
+        const idRegex = /([a-f0-9]{32})\.md/i;
+
         return blocks
-            .filter(block => linkRegex.test(block) && block.endsWith('.md)'))
-            .map(link => link.split('%').at(-1)?.split('.md')[0])
-            .filter((link): link is string => !!link)
+            .filter(block => linkRegex.test(block))
+            .map(block => {
+                const match = block.match(idRegex);
+                return match ? match[1] : null;
+            })
+            .filter((id): id is string => id !== null);
     }
 
     private async createPagesCacheFile(abspath: string): Promise<string> {
