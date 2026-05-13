@@ -36,3 +36,12 @@ export const formatConfig = {
         "additionalProperties": false
     }
 }
+/* 
+    { keywords: [
+        'keyword_1',
+        'keyword_2',
+        'keyword_3',
+        ...,
+        'keyword_20' 
+    ]}
+*/
