@@ -16,8 +16,6 @@ class SearchController {
     }
 
     public getPageChildren(page: Page): Page[] {
-        console.log('running')
-        console.log(new Set(page.childrenIds))
         return this.searchEngine.getPagesByIds(new Set(page.childrenIds))
     }
 
