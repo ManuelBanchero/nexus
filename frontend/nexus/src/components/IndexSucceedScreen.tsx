@@ -1,26 +1,24 @@
-import { Action, ActionPanel, Detail } from "@raycast/api"
-import { Dispatch, SetStateAction } from "react"
+import { Action, ActionPanel, Icon, List, useNavigation } from "@raycast/api"
+import Command from "../nexus"
 
-type IndexSucceedScreenProps = {
-    setIsIndexed: Dispatch<SetStateAction<boolean>>
-}
-
-export default function IndexSucceedScreen({
-    setIsIndexed
-}: IndexSucceedScreenProps) {
-    const markdown = "# Workspace Indexed Successfully ⚡️ All pages from your Notion workspace have been processed and cached locally. Nexus is now fully operational.\n\nPress **Enter** to launch the Search Engine."
+export default function IndexSucceedScreen() {
+    const { push } = useNavigation()
 
     return (
-        <Detail 
-            markdown={markdown}
-            actions={
-                <ActionPanel>
-                    <Action 
-                        title='Launch Search Engine'
-                        onAction={() => setIsIndexed(true)}
-                    />
-                </ActionPanel>
-            }
-        />
+        <List>
+            <List.EmptyView 
+                title='Workspace Indexed Successfully'
+                description='All pages from your Notion workspace have been processed and cached locally. Nexus is now fully operational.'
+                icon={Icon.Quicklink}
+                actions={
+                    <ActionPanel>
+                        <Action 
+                            title='Launch Nexus'
+                            onAction={() => push(<Command />)}
+                        />
+                    </ActionPanel>
+                }
+            />
+        </List>
     )
 }

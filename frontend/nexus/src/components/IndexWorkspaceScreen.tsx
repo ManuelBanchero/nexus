@@ -1,7 +1,8 @@
 import { Action, ActionPanel, Icon, List, useNavigation, confirmAlert, Alert, Toast, showToast } from '@raycast/api'
 import { SearchController } from '../../../../backend/src/controller/SearchController'
 import { useState } from 'react'
-import Command from '../nexus'
+import { Response } from '../../../../backend/src/model/types/Response'
+import IndexSucceedScreen from './IndexSucceedScreen'
 
 type IndexWorkspaceScreenProps = {
     controller: SearchController | null
@@ -19,7 +20,15 @@ export default function IndexWorkspaceScreen({
 
     const alertSettings = {
         title: 'Are you sure?', 
-        message: 'This process will consume OpenAI API Credits. Do you want to continue?',
+        message: 'This process will consume OpenAI API Credits.',
+        primaryAction: {
+            title: 'Confirm',
+            style: Alert.ActionStyle.Default
+        }
+    }
+
+    const completeIndexAlertSettings = {
+        message: 'Do you want to index the missing pages? This process will consume OpenAI API Credits.',
         primaryAction: {
             title: 'Confirm',
             style: Alert.ActionStyle.Default
@@ -35,18 +44,19 @@ export default function IndexWorkspaceScreen({
         setIsIndexing(true)
         
         await new Promise(resolve => setTimeout(resolve, 0))
-        indexWorkspace()
+        if (!controller)
+            return
+        indexWorkspace(() => controller.indexWorkspace())
     }
 
-    async function indexWorkspace() {
+    async function indexWorkspace(indexCallback: () => Promise<Response>) {
+        const toast = await showToast({
+            style: Toast.Style.Animated,
+            title: "Indexing workspace...",
+            message: "Analyzing pages and extracting keywords",
+        })
         try {
-            const toast = await showToast({
-                    style: Toast.Style.Animated,
-                    title: "Indexing workspace...",
-                    message: "Analyzing pages and extracting keywords",
-                })
-
-            const response = await controller?.indexWorkspace()
+            const response = await indexCallback()
 
             if (!response?.success) {
                 const error = new Error("An error occurred while indexing the workspace")
@@ -61,15 +71,37 @@ export default function IndexWorkspaceScreen({
 
             controller?.setIsIndexed(true)
 
-            toast.style = Toast.Style.Success
-            toast.title = "Workspace indexed successfully"
 
             setIsIndexing(false)
+            toast.message = ''
+
+            if (controller) {
+                const amountOfPagesUnindexed = controller.getNumberOfUnindexedPages()
+                if (amountOfPagesUnindexed > 0) {
+                    toast.style = Toast.Style.Failure
+                    toast.title = 'Not all pages has been indexed successfully'
+                    if (await confirmAlert({ 
+                        title: `It's looks like ${amountOfPagesUnindexed} pages has not been indexed`, 
+                        ...completeIndexAlertSettings})
+                    ) {
+                        // recursivelly runs indexWorkspace until: 1- All pages are indexed. Or 2- The user decides to not index the missing pages
+                        return indexWorkspace(() => controller.indexMissingPages())
+                    }
+                } else {
+                    toast.style = Toast.Style.Success
+                    toast.title = "Workspace indexed successfully"
+                }
+            }
 
             setTimeout(() => {
-                push(<Command />)
+                push(<IndexSucceedScreen />)
             }, 800)
         } catch (e) {
+            toast.style = Toast.Style.Failure
+            toast.title = "Error indexing workspace"
+            toast.message = ''
+
+            setIsIndexing(false)
             setError(
                 e instanceof Error
                     ? e
@@ -79,6 +111,7 @@ export default function IndexWorkspaceScreen({
     }
 
     if (error) {
+        console.error(error)
         return (
             <List>
                 <List.EmptyView

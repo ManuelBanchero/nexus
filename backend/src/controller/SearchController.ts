@@ -31,6 +31,14 @@ class SearchController {
         return this.searchEngine.setIsIndexed(value)
     }
 
+    public getNumberOfUnindexedPages() {
+        return this.searchEngine.getNumberOfUnindexedPages()
+    }
+
+    public async indexMissingPages(): Promise<Response> {
+        return this.searchEngine.indexMissingPages()
+    }
+
 }
 
 export { SearchController }

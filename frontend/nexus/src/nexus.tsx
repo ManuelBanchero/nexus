@@ -16,7 +16,6 @@ export default function Command() {
     const [error, setError] = useState<Error | null>(null)
 
     const cacheFilePath = path.join(environment.supportPath, 'pagesCache.json')
-    console.log(cacheFilePath)
 
     useEffect(() => {
         async function initSearchEngine() {

@@ -21,13 +21,56 @@ class SearchEngine {
 
     public async indexPages(): Promise<Response> {
         const pages: Page[] | null = this.workspace.pagesCache
-        if (!pages) {
+        if (!pages || pages.length === 0) {
             return {
                 success: false,
                 error: 'There are not pages on pagesCache'
             }
         }
 
+        const indexedPages = await this.handleIndex(pages)
+
+        // Uncomment this line if you want to test the indexMissingPages feature
+        // this.forceError(indexedPages)
+
+        this.workspace.updatePagesCache(indexedPages)
+
+        return { success: true }
+    }
+
+    private forceError(pages: Page[]) {
+        pages[0] = {
+            ...pages[0],
+            keywords: []
+        }
+
+        pages[1] = {
+            ...pages[1],
+            keywords: []
+        }
+    }
+
+    public async indexMissingPages(): Promise<Response> {
+        const unindexedPages: Page[] = this.workspace.getUnindexedPages()
+        if (unindexedPages.length === 0)
+            return { success: false, error: 'All pages has been indexed' }
+
+        const indexedPages = await this.handleIndex(unindexedPages)
+        const pages: Page[] = this.workspace.pagesCache || []
+
+        for (const page of indexedPages) {
+            const pageIndex = pages.findIndex(p => p.id === page.id)
+            if (pageIndex === -1)
+                continue
+            pages[pageIndex] = page
+        }
+
+        this.workspace.updatePagesCache(pages)
+
+        return { success: true }
+    }
+
+    private async handleIndex(pages: Page[]): Promise<Page[]> {
         const BATCH_SIZE = 10
         const indexedPages = []
 
@@ -58,9 +101,7 @@ class SearchEngine {
                 await new Promise(resolve => setTimeout(resolve, 1000)) // wait for 1 second btw each batch
         }
 
-        this.workspace.updatePagesCache(indexedPages)
-
-        return { success: true }
+        return indexedPages
     }
 
     public createTrie(): Response {
@@ -96,6 +137,10 @@ class SearchEngine {
             page && pages.push(page)
         }
         return pages
+    }
+
+    public getNumberOfUnindexedPages() {
+        return this.workspace.getNumberOfUnindexedPages()
     }
 
     public printTrie() {

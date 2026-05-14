@@ -62,25 +62,27 @@ class Workspace {
         this._indexed = value
     }
 
+    public getNumberOfUnindexedPages(): number {
+        return this.filterNotIndexedPages().length
+    }
+
+    public getUnindexedPages(): Page[] {
+        return this.filterNotIndexedPages()
+    }
+
     /*
         PRIVATE METHODS
     */
+
+    private filterNotIndexedPages(): Page[] {
+        return this._pagesCache.filter(page => page.keywords.length === 0)
+    }
 
     private isWorkspaceIndexed() {
         for (let i = 0; i < this._pagesCache.length; i++) {
             if (this._pagesCache[i].keywords.length > 0) return true
         }
         return false
-    }
-
-    private async getPagesCachePath() {
-        const pagesCacheDir = path.join(config.abspath, '..', 'data', 'pagesCache')
-        const dirFiles = await fs.readdir(pagesCacheDir)
-
-        if (dirFiles.includes('pagesCache.json')) {
-            return path.join(pagesCacheDir, 'pagesCache.json')
-        }
-        return null
     }
 
     private async createPagesCache(actualPath: string) {
