@@ -6,16 +6,18 @@ import { SearchController } from './controller/SearchController.js'
 
 type bootstrapParams = {
     apiKey: string,
-    workspacePath: string
+    workspacePath: string,
+    cacheFilePath: string
 }
 
 async function bootstrap({
     apiKey,
-    workspacePath
+    workspacePath,
+    cacheFilePath
 }: bootstrapParams) {
     // Low level instances
     const llm = new OpenAI(config.llmConfig, apiKey)
-    const workspace = new Workspace(workspacePath)
+    const workspace = new Workspace(workspacePath, cacheFilePath)
     await workspace.init()
 
     // High level instances -> orchestrating class

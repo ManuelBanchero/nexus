@@ -1,4 +1,4 @@
-import { Action, ActionPanel, List } from '@raycast/api'
+import { Action, ActionPanel, Icon, List } from '@raycast/api'
 import { useEffect, useState } from 'react'
 import { SearchController } from '../../../../backend/src/controller/SearchController'
 import ResultsScreen from './ResultsScreen'
@@ -35,6 +35,7 @@ export default function SearchScreen({
                 <List.Item 
                     key={prefix}
                     title={`${prefix.slice(0, 1).toUpperCase()}${prefix.slice(1)}`}
+                    icon={Icon.MagnifyingGlass}
                     actions={
                         <ActionPanel>
                             <Action.Push 

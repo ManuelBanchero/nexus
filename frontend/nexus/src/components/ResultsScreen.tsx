@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Page } from '../../../../backend/src/model/types/Page'
-import { Action, ActionPanel, List } from '@raycast/api'
+import { Action, ActionPanel, Icon, List } from '@raycast/api'
 import { SearchController } from '../../../../backend/src/controller/SearchController'
 import PageScreen from './PageScreen'
 
@@ -35,7 +35,6 @@ export default function ResultsScreen({
                 setPages(response.data.slice(0, 50))
         } else if (page) {
             const pageChildren = controller?.getPageChildren(page)
-            console.log(pageChildren)
             setPages(pageChildren)
         }
 
@@ -65,12 +64,20 @@ export default function ResultsScreen({
                     <List.Item 
                         key={page.id}
                         title={page.title}
+                        icon={Icon.Document}
+                        accessories={[{
+                            text: { value: page.childrenIds && page.childrenIds.length > 0
+                                ? `${page.childrenIds?.length} sub-pages` 
+                                : `Non sub-pages`
+                            },
+                        }]}
                         actions={
                             <ActionPanel>
                                 <Action.OpenInBrowser url={page.url} />
                                 <Action.Push 
                                     title="View Content"
                                     target={<PageScreen page={page} />}
+                                    icon={Icon.Book}
                                 />
                                 <Action.Push 
                                     title="View Page Children"
@@ -79,6 +86,7 @@ export default function ResultsScreen({
                                         page={page}
                                     />}
                                     shortcut={{ modifiers: ['cmd'], key: '.' }}
+                                    icon={Icon.ChevronDown}
                                 />
                             </ActionPanel>
                         }

@@ -11,6 +11,14 @@ class SearchEngine {
         private trie: Trie = new Trie()
     ) { }
 
+    public isWorkspaceIndexed(): boolean {
+        return this.workspace.indexed
+    }
+
+    public setIsIndexed(value: boolean) {
+        this.workspace.setIsIndexed(value)
+    }
+
     public async indexPages(): Promise<Response> {
         const pages: Page[] | null = this.workspace.pagesCache
         if (!pages) {

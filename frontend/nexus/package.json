@@ -3,7 +3,7 @@
   "name": "nexus",
   "title": "Nexus",
   "description": "",
-  "icon": "extension-icon.png",
+  "icon": "icon.png",
   "author": "manuel_banchero",
   "platforms": [
     "macOS",

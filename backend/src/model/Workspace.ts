@@ -6,8 +6,9 @@ import { config } from '../config/config.js'
 class Workspace {
     constructor(
         private readonly fullWorkspacePath: string,
-        private pagesCachePath: string | null = null,
-        private _pagesCache: Page[] = []
+        private pagesCachePath: string,
+        private _pagesCache: Page[] = [],
+        private _indexed: boolean = false
     ) { }
 
     /*
@@ -17,39 +18,61 @@ class Workspace {
         return this._pagesCache
     }
 
+    get indexed(): boolean {
+        return this._indexed
+    }
+
     /*
         PUBLIC METHODS    
     */
     public async init() {
-        this.pagesCachePath = await this.getPagesCachePath()
-        if (!this.pagesCachePath) {
-            console.log('Creating file content\n')
+        try {
+            const cacheFileContent = await this.getPagesCacheContent()
+            if (cacheFileContent) {
+                console.log('Getting file content\n')
+                this._pagesCache = cacheFileContent
+                // Check if the workspace is indexed
+                this._indexed = this.isWorkspaceIndexed()
+            }
+        } catch (e) {
+            const error = e as NodeJS.ErrnoException
+            if (error.code === 'ENOENT' || e instanceof SyntaxError) {
+                console.log('Creating file content\n')
+                await this.createPagesCache(this.fullWorkspacePath)
+                await this.createPagesCacheFile()
 
-            await this.createPagesCache(this.fullWorkspacePath)
-            const pagesCachePath = await this.createPagesCacheFile(config.abspath)
-            this.pagesCachePath = pagesCachePath
-        } else {
-            console.log('Getting file content')
-
-            const pagesCacheFileContent = await this.getPagesCacheContent()
-            if (pagesCacheFileContent) {
-                this._pagesCache = pagesCacheFileContent
+                // Set indexed to false -> so the user can index his workspace when he wants
+                this._indexed = false
+            } else {
+                console.error('Unexpected error has ocurred executing init function')
             }
         }
     }
 
     public updatePagesCache(pages: Page[]) {
         this._pagesCache = pages
-        this.updatePagesCacheFile(config.abspath)
+        this.updatePagesCacheFile()
     }
 
     public getPageById(id: string): Page | undefined {
         return this._pagesCache.find(page => page.id === id)
     }
 
+    public setIsIndexed(value: boolean) {
+        this._indexed = value
+    }
+
     /*
         PRIVATE METHODS
     */
+
+    private isWorkspaceIndexed() {
+        for (let i = 0; i < this._pagesCache.length; i++) {
+            if (this._pagesCache[i].keywords.length > 0) return true
+        }
+        return false
+    }
+
     private async getPagesCachePath() {
         const pagesCacheDir = path.join(config.abspath, '..', 'data', 'pagesCache')
         const dirFiles = await fs.readdir(pagesCacheDir)
@@ -164,32 +187,20 @@ class Workspace {
             .filter((id): id is string => id !== null);
     }
 
-    private async createPagesCacheFile(abspath: string): Promise<string> {
-        const filePath = path.join(abspath, '..', 'data', 'pagesCache', 'pagesCache.json')
-
-        const dirPath = path.dirname(filePath)
-        await fs.mkdir(dirPath, { recursive: true })
-
+    private async createPagesCacheFile() {
         await fs.writeFile(
-            filePath,
+            this.pagesCachePath,
             JSON.stringify(this._pagesCache, null, 2),
             'utf-8'
         )
-        return filePath
     }
 
     private async getPagesCacheContent() {
-        try {
-            if (!this.pagesCachePath)
-                throw new Error('Pages Cache path is null and you are trying to read it')
-            return JSON.parse(await fs.readFile(this.pagesCachePath, 'utf-8'))
-        } catch (error) {
-            console.error('An error has ocurred trying to read pages cache')
-        }
+        return JSON.parse(await fs.readFile(this.pagesCachePath, 'utf-8'))
     }
 
-    private async updatePagesCacheFile(abspath: string) {
-        await this.createPagesCacheFile(abspath)
+    private async updatePagesCacheFile() {
+        await this.createPagesCacheFile()
     }
 }
 

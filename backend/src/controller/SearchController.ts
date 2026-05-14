@@ -19,6 +19,18 @@ class SearchController {
         return this.searchEngine.getPagesByIds(new Set(page.childrenIds))
     }
 
+    public isWorkspaceIndexed(): boolean {
+        return this.searchEngine.isWorkspaceIndexed()
+    }
+
+    public async indexWorkspace(): Promise<Response> {
+        return this.searchEngine.indexPages()
+    }
+
+    public async setIsIndexed(value: boolean) {
+        return this.searchEngine.setIsIndexed(value)
+    }
+
 }
 
 export { SearchController }
