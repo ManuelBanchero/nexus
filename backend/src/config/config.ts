@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { systemPrompt, formatConfig } from './LLMConfig.js'
 
 type FormatConfig = {
@@ -13,15 +12,9 @@ type LLMConfig = {
 }
 
 type Config = {
-    abspath: string,
-    workspacePath: string,
     llmConfig: LLMConfig
 }
 
-//const __dirname = '/Users/manuelbanchero/dev/projects/nexus/backend/src/config'
-//const abspath = path.join(__dirname, '..')
-const abspath = '/Users/manuelbanchero/dev/projects/nexus/backend/src'
-const workspacePath = path.join(abspath, '..', 'data', 'workspace')
 
 const llmConfig: LLMConfig = {
     model: 'gpt-4o-mini',
@@ -32,7 +25,5 @@ const llmConfig: LLMConfig = {
 }
 
 export const config: Config = {
-    abspath,
-    workspacePath,
     llmConfig
 }
