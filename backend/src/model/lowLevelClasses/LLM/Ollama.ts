@@ -19,13 +19,13 @@ class Ollama extends LLM {
         const { model } = this.config
         this.addToLLMMessages('user', prompt)
 
-        const response = await ollama.chat({
+        const stream = await ollama.chat({
             model,
             messages: this.messages,
             stream: true
         })
 
-        for await (const chunk of response) {
+        for await (const chunk of stream) {
             yield chunk.message.content
         }
     }

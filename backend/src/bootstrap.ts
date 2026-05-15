@@ -10,17 +10,20 @@ import { QAController } from './controller/QAController.js'
 type bootstrapParams = {
     apiKey: string,
     workspacePath: string,
-    cacheFilePath: string
+    cacheFilePath: string,
+    getLocalAnswers: boolean
 }
 
 async function bootstrap({
     apiKey,
     workspacePath,
-    cacheFilePath
+    cacheFilePath,
+    getLocalAnswers
 }: bootstrapParams): Promise<{ searchController: SearchController, qaController: QAController }> {
     // Low level instances
     const llm = new OpenAI(config.llmConfig, apiKey)
-    const qaLlm = new Ollama(config.qaLlmConfig)
+    const qaLlm = getLocalAnswers ? new Ollama(config.qaLocalLlmConfig) : new OpenAI(config.qaLlmConfig, apiKey)
+
     const workspace = new Workspace(workspacePath, cacheFilePath)
     await workspace.init()
 

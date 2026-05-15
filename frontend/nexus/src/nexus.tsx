@@ -11,6 +11,7 @@ export default function Command() {
     const preferences = getPreferenceValues<Preferences>()
     const apiKey = preferences.OPEN_AI_API_KEY
     const workspacePath = preferences.WORKSPACE_PATH
+    const getLocalAnswers = preferences.LOCAL_AI_ANSWERS
 
     const [searchController, setSearchController] = useState<SearchController | null>(null)
     const [qaController, setQaController] = useState<QAController | null>(null)
@@ -26,7 +27,7 @@ export default function Command() {
         hasRun.current = true
         async function initSearchEngine() {
             try {
-                const controllers = await bootstrap({ apiKey, workspacePath, cacheFilePath })
+                const controllers = await bootstrap({ apiKey, workspacePath, cacheFilePath, getLocalAnswers })
 
                 const searchCtrl = controllers.searchController
                 const qaCtrl = controllers.qaController

@@ -35,7 +35,7 @@ export default function PromptFormScreen({
             actions={
                 <ActionPanel>
                     <Action.SubmitForm 
-                        title='Get AI Answer'
+                        title='Answer to AI'
                         onSubmit={handleSubmit}
                     />
                 </ActionPanel>

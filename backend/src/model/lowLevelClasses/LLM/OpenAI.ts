@@ -14,7 +14,6 @@ class OpenAI extends LLM {
     public async getResponse(prompt: string): Promise<string | any> {
         const { systemPrompt, text, ...config } = this.config
 
-        console.log('Calling model')
         const clientConfig = {
             ...config,
             instructions: systemPrompt,
@@ -22,7 +21,6 @@ class OpenAI extends LLM {
         }
         try {
             const response = await this.client.responses.create(clientConfig)
-            console.log('Call finished')
 
             return response.output_text
         } catch (error) {
@@ -34,7 +32,6 @@ class OpenAI extends LLM {
     public async getSchemaResponse(prompt: string): Promise<Response> {
         const { systemPrompt, ...config } = this.config
 
-        console.log('Calling model')
         const clientConfig = {
             ...config,
             instructions: systemPrompt,
@@ -56,7 +53,30 @@ class OpenAI extends LLM {
         }
     }
 
-    public async *getResponseStream(prompt: string): AsyncGenerator<string, void, void> { }
+    public async *getResponseStream(prompt: string): AsyncGenerator<string, void, void> {
+        console.log('Getting answer w/ OpenAI')
+        const { systemPrompt, model } = this.config
+
+        try {
+            const stream = await this.client.chat.completions.create({
+                model,
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: prompt }
+                ],
+                stream: true
+            })
+
+            for await (const chunk of stream) {
+                const content = chunk.choices[0]?.delta?.content
+                if (!content) continue
+
+                yield content
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 }
 
 export { OpenAI }

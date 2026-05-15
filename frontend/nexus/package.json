@@ -34,6 +34,13 @@
       "type": "directory",
       "required": true,
       "placeholder": "Users/your-ursername/your/directory/workspace/path"
+    },
+    {
+      "name": "LOCAL_AI_ANSWERS",
+      "title": "Get local AI answers",
+      "description": "User preference about AI response locally (Ollama) or external (API KEY)",
+      "type": "checkbox",
+      "required": true
     }
   ],
   "dependencies": {

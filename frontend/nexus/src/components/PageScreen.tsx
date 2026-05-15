@@ -33,7 +33,7 @@ export default function PageScreen({
                     />
                     <Action 
                         title="Ask AI About This Content"
-                        shortcut={{ modifiers: ['opt'], key: 'u' }}
+                        shortcut={{ modifiers: ['shift'], key: 'enter' }}
                         onAction={() => push(<PromptFormScreen 
                             qaController={qaController}
                             pageContent={page.content}

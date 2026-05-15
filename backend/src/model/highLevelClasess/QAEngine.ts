@@ -6,7 +6,16 @@ class QAEngine {
     ) { }
 
     public async *getChatCompletion(pageContent: string, userPrompt: string): AsyncGenerator<string, void, void> {
-        const prompt = `Context: ${pageContent}\n\nUser prompt: ${userPrompt}`
+        const prompt = `
+        <NOTION PAGE>
+        ${pageContent}
+        </NOTION PAGE>
+
+        <USER PROMPT>
+        ${userPrompt}
+        </USER PROMPT>
+        `
+
         yield* this.llm.getResponseStream(prompt)
     }
 }

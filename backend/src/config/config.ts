@@ -18,6 +18,7 @@ type LLMConfig = {
 
 type Config = {
     llmConfig: LLMConfig,
+    qaLocalLlmConfig: LLMConfig,
     qaLlmConfig: LLMConfig
 }
 
@@ -29,12 +30,18 @@ const llmConfig: LLMConfig = {
     }
 }
 
+const qaLocalLlmConfig: LLMConfig = {
+    model: 'qwen3:8b',
+    systemPrompt: qaSystemPrompt
+}
+
 const qaLlmConfig: LLMConfig = {
-    model: 'llama3.1',
+    model: 'gpt-4o-mini',
     systemPrompt: qaSystemPrompt
 }
 
 export const config: Config = {
     llmConfig,
+    qaLocalLlmConfig,
     qaLlmConfig
 }
