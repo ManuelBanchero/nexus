@@ -2,6 +2,7 @@ import { Action, ActionPanel, Detail, useNavigation } from "@raycast/api"
 import { Page } from "../../../../backend/src/model/types/Page"
 import { QAController } from "../../../../backend/src/controller/QAController"
 import LLMResponseScreen from "./LLMResponseScreen"
+import PromptFormScreen from "./PromptFormScreen"
 
 type PageScreenProps = {
     page: Page,
@@ -28,6 +29,14 @@ export default function PageScreen({
                             qaController={qaController}
                             pageContent={page.content}
                             userPrompt='summarize'
+                        />)}
+                    />
+                    <Action 
+                        title="Ask AI About This Content"
+                        shortcut={{ modifiers: ['opt'], key: 'u' }}
+                        onAction={() => push(<PromptFormScreen 
+                            qaController={qaController}
+                            pageContent={page.content}
                         />)}
                     />
                 </ActionPanel>
