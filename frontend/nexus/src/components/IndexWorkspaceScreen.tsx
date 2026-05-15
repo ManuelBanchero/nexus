@@ -5,11 +5,11 @@ import { Response } from '../../../../backend/src/model/types/Response'
 import IndexSucceedScreen from './IndexSucceedScreen'
 
 type IndexWorkspaceScreenProps = {
-    controller: SearchController | null
+    searchController: SearchController | null
 }
 
 export default function IndexWorkspaceScreen({
-    controller
+   searchController 
 }: IndexWorkspaceScreenProps) {
     const { push } = useNavigation()
 
@@ -44,9 +44,9 @@ export default function IndexWorkspaceScreen({
         setIsIndexing(true)
         
         await new Promise(resolve => setTimeout(resolve, 0))
-        if (!controller)
+        if (!searchController)
             return
-        indexWorkspace(() => controller.indexWorkspace())
+        indexWorkspace(() => searchController.indexWorkspace())
     }
 
     async function indexWorkspace(indexCallback: () => Promise<Response>) {
@@ -69,14 +69,14 @@ export default function IndexWorkspaceScreen({
                 return
             }
 
-            controller?.setIsIndexed(true)
+            searchController?.setIsIndexed(true)
 
 
             setIsIndexing(false)
             toast.message = ''
 
-            if (controller) {
-                const amountOfPagesUnindexed = controller.getNumberOfUnindexedPages()
+            if (searchController) {
+                const amountOfPagesUnindexed = searchController.getNumberOfUnindexedPages()
                 if (amountOfPagesUnindexed > 0) {
                     toast.style = Toast.Style.Failure
                     toast.title = 'Not all pages has been indexed successfully'
@@ -85,7 +85,7 @@ export default function IndexWorkspaceScreen({
                         ...completeIndexAlertSettings})
                     ) {
                         // recursivelly runs indexWorkspace until: 1- All pages are indexed. Or 2- The user decides to not index the missing pages
-                        return indexWorkspace(() => controller.indexMissingPages())
+                        return indexWorkspace(() => searchController.indexMissingPages())
                     }
                 } else {
                     toast.style = Toast.Style.Success

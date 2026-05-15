@@ -1,7 +1,7 @@
-import { Response } from './types/Response.js'
+import { Response } from '../../types/Response.js'
 
 type Message = {
-    role: string,
+    role: 'system' | 'user',
     content: string
 }
 
@@ -24,6 +24,7 @@ abstract class LLM {
 
     public abstract getResponse(prompt: string): Promise<string>
     public abstract getSchemaResponse(prompt: string): Promise<Response>
+    public abstract getResponseStream(prompt: string): AsyncGenerator<string, void, void>
 }
 
 export { LLM, LLMConfig, FormatType, Message }

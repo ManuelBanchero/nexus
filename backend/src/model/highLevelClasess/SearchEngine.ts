@@ -1,8 +1,8 @@
-import { LLM } from './LLM.js'
-import { Page } from './types/Page.js'
-import { Workspace } from './Workspace.js'
-import { Response } from './types/Response.js'
-import { Trie } from './Trie.js'
+import { LLM } from '../lowLevelClasses/LLM/LLM.js'
+import { Page } from '../types/Page.js'
+import { Workspace } from '../lowLevelClasses/Workspace.js'
+import { Response } from '../types/Response.js'
+import { Trie } from '../lowLevelClasses/Trie.js'
 
 class SearchEngine {
     constructor(

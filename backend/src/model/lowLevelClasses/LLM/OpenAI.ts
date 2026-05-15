@@ -1,5 +1,5 @@
-import { LLM, LLMConfig } from './LLM.js'
-import { Response } from './types/Response.js'
+import { LLM, LLMConfig } from '../LLM/LLM.js'
+import { Response } from '../../types/Response.js'
 import OpenAISdk from 'openai'
 
 
@@ -55,6 +55,8 @@ class OpenAI extends LLM {
             }
         }
     }
+
+    public async *getResponseStream(prompt: string): AsyncGenerator<string, void, void> { }
 }
 
 export { OpenAI }

@@ -1,4 +1,9 @@
-import { systemPrompt, formatConfig } from './LLMConfig.js'
+import {
+    systemPrompt as indexSytemPrompt,
+    formatConfig as indexLLMFormatConfig
+} from './IndexLLMConfig.js'
+
+import { systemPrompt as qaSystemPrompt } from './QALLMConfig.js'
 
 type FormatConfig = {
     [key: string]: string | number | boolean | string[] | FormatConfig
@@ -12,18 +17,24 @@ type LLMConfig = {
 }
 
 type Config = {
-    llmConfig: LLMConfig
+    llmConfig: LLMConfig,
+    qaLlmConfig: LLMConfig
 }
-
 
 const llmConfig: LLMConfig = {
     model: 'gpt-4o-mini',
-    systemPrompt,
+    systemPrompt: indexSytemPrompt,
     text: {
-        format: formatConfig
+        format: indexLLMFormatConfig
     }
 }
 
+const qaLlmConfig: LLMConfig = {
+    model: 'llama3.1',
+    systemPrompt: qaSystemPrompt
+}
+
 export const config: Config = {
-    llmConfig
+    llmConfig,
+    qaLlmConfig
 }

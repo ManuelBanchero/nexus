@@ -1,8 +1,11 @@
-import { Workspace } from './model/Workspace.js'
+import { Workspace } from './model/lowLevelClasses/Workspace.js'
 import { config } from './config/config.js'
-import { OpenAI } from './model/OpenAI.js'
-import { SearchEngine } from './model/SearchEngine.js'
+import { OpenAI } from './model/lowLevelClasses/LLM/OpenAI.js'
+import { SearchEngine } from './model/highLevelClasess/SearchEngine.js'
 import { SearchController } from './controller/SearchController.js'
+import { QAEngine } from './model/highLevelClasess/QAEngine.js'
+import { Ollama } from './model/lowLevelClasses/LLM/Ollama.js'
+import { QAController } from './controller/QAController.js'
 
 type bootstrapParams = {
     apiKey: string,
@@ -14,9 +17,10 @@ async function bootstrap({
     apiKey,
     workspacePath,
     cacheFilePath
-}: bootstrapParams) {
+}: bootstrapParams): Promise<{ searchController: SearchController, qaController: QAController }> {
     // Low level instances
     const llm = new OpenAI(config.llmConfig, apiKey)
+    const qaLlm = new Ollama(config.qaLlmConfig)
     const workspace = new Workspace(workspacePath, cacheFilePath)
     await workspace.init()
 
@@ -24,9 +28,16 @@ async function bootstrap({
     const searchEngine = new SearchEngine(llm, workspace)
     searchEngine.createTrie()
 
+    const qaEngine = new QAEngine(qaLlm)
+
     // Controller -> Got access to high level classes
-    const controller = new SearchController(searchEngine)
-    return controller
+    const searchController = new SearchController(searchEngine)
+    const qaController = new QAController(qaEngine)
+
+    return {
+        searchController,
+        qaController
+    }
 }
 
 export { bootstrap }

@@ -2,26 +2,29 @@ import { Action, ActionPanel, Icon, List } from '@raycast/api'
 import { useEffect, useState } from 'react'
 import { SearchController } from '../../../../backend/src/controller/SearchController'
 import ResultsScreen from './ResultsScreen'
+import { QAController } from '../../../../backend/src/controller/QAController'
 
 type SearchScreenProps = {
-    controller: SearchController | null
+    searchController: SearchController | null,
+    qaController: QAController | null
 }
 
 export default function SearchScreen({
-    controller
+    searchController,
+    qaController
 }: SearchScreenProps) {
     const [searchText, setSearchText] = useState<string>('')
     const [prefixes, setPrefixes] = useState<string[]>([])
 
     useEffect(() => {
-        if (!searchText || !controller) {
+        if (!searchText || !searchController) {
             setPrefixes([])
             return
         }
 
-        const response = controller.completePrefix(searchText)
+        const response = searchController.completePrefix(searchText)
         setPrefixes(response.slice(0, 50)) // list with no more than 50 elements
-    }, [searchText, controller])
+    }, [searchText, searchController])
 
     return (
         <List
@@ -29,7 +32,7 @@ export default function SearchScreen({
             onSearchTextChange={setSearchText}
             navigationTitle='Nexus - Engine'
             searchBarPlaceholder='Type to search on trie'
-            isLoading={!controller}
+            isLoading={!searchController}
         >
             { prefixes.map(prefix => 
                 <List.Item 
@@ -41,7 +44,8 @@ export default function SearchScreen({
                             <Action.Push 
                                 title='Search Pages'
                                 target={<ResultsScreen 
-                                    controller={controller}
+                                    searchController={searchController}
+                                    qaController={qaController}
                                     word={prefix}
                                 />}
                             />

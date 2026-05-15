@@ -3,15 +3,18 @@ import { Page } from '../../../../backend/src/model/types/Page'
 import { Action, ActionPanel, Icon, List } from '@raycast/api'
 import { SearchController } from '../../../../backend/src/controller/SearchController'
 import PageScreen from './PageScreen'
+import { QAController } from '../../../../backend/src/controller/QAController'
 
 type ResultsScreenProps = {
-    controller: SearchController | null,
+    searchController: SearchController | null,
+    qaController: QAController | null
     word?: string,
     page?: Page
 }
 
 export default function ResultsScreen({
-    controller,
+    searchController,
+    qaController,
     word,
     page
 }: ResultsScreenProps) {
@@ -24,23 +27,23 @@ export default function ResultsScreen({
             setError(new Error('Results Screen must include a word or a page on props'))
             return
         }
-        if (!controller) {
+        if (!searchController) {
             setError(new Error('Controller is undefined'))
             return
         }
 
         if (word) {
-           const response = controller?.search(word)
+           const response = searchController?.search(word)
             if (response?.success)
                 setPages(response.data.slice(0, 50))
         } else if (page) {
-            const pageChildren = controller?.getPageChildren(page)
+            const pageChildren = searchController?.getPageChildren(page)
             setPages(pageChildren)
         }
 
         setError(null)
         
-    }, [controller, word])
+    }, [searchController, word])
 
     if (error) return (
         <List><List.EmptyView title='Error' description={error.message} /></List>
@@ -76,13 +79,17 @@ export default function ResultsScreen({
                                 <Action.OpenInBrowser url={page.url} />
                                 <Action.Push 
                                     title="View Content"
-                                    target={<PageScreen page={page} />}
+                                    target={<PageScreen 
+                                        page={page} 
+                                        qaController={qaController}
+                                    />}
                                     icon={Icon.Book}
                                 />
                                 <Action.Push 
                                     title="View Page Children"
                                     target={<ResultsScreen 
-                                        controller={controller}
+                                        searchController={searchController}
+                                        qaController={qaController}
                                         page={page}
                                     />}
                                     shortcut={{ modifiers: ['cmd'], key: '.' }}

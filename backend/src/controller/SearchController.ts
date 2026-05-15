@@ -1,4 +1,4 @@
-import { SearchEngine } from "../model/SearchEngine.js";
+import { SearchEngine } from "../model/highLevelClasess/SearchEngine.js";
 import { Page } from "../model/types/Page.js";
 import { Response } from "../model/types/Response.js";
 
