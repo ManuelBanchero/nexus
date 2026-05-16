@@ -1,7 +1,6 @@
 import { Page } from '../types/Page.js'
 import path from 'node:path'
 import fs from 'node:fs/promises'
-import { config } from '../../config/config.js'
 
 class Workspace {
     constructor(
