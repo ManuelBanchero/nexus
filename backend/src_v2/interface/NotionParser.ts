@@ -1,5 +1,5 @@
-import IParser from '../domain/IParser'
-import Page from '../domain/Page'
+import IParser from '../domain/IParser.js'
+import Page from '../domain/Page.js'
 
 export default class NotionParser implements IParser {
     public parse(filename: string, content: string): Page | null {
