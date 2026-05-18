@@ -3,14 +3,14 @@ import Page from '../domain/Page.js'
 
 export default class NotionParser implements IParser {
     public parse(filename: string, content: string): Page | null {
-        const id: string | undefined = this.extractIdFromFilename(filename)
+        const id: string | null = this.extractIdFromFilename(filename)
         if (!id)
             return null
 
         const blocks: string[] = this.extractPageBlocks(content)
         return {
             id,
-            title: this.extractTitleFromBlocks(blocks),
+            title: this.extractTitleFromBlocks(blocks, filename),
             content,
             url: this.getPageUrl(id),
             childrenIds: this.extractChildrenIds(blocks),
@@ -18,16 +18,33 @@ export default class NotionParser implements IParser {
         }
     }
 
-    private extractIdFromFilename(path: string): string | undefined {
-        return path.split(' ').at(-1)?.split('.')[0].trim()
+    private extractIdFromFilename(filename: string): string | null {
+        const idRegex = /([a-f0-9]{32})\.md/i
+        const match = filename.match(idRegex)
+
+        if (!match) return null
+        return match[1]
     }
 
     private extractPageBlocks(content: string): string[] {
         return content.split('\n\n')
     }
 
-    private extractTitleFromBlocks(blocks: string[]): string {
-        return blocks[0].slice(1).trim()
+    private extractTitleFromBlocks(blocks: string[], filename: string): string {
+        const titleBlock: string | undefined = blocks.find(block => block.startsWith('# '))
+
+        // If there are not title for any reason in the .md file (it should not happen) -> the app will use the filename and extract the title
+        if (!titleBlock) {
+            const titleRegex = /^(.*?)\s+\[?([a-f0-9]{32})\]?\.md$/i
+            const match = filename.match(titleRegex)
+
+            return match ? match[1] : 'Page with no title' // In case file does not have a title (just in case)
+        }
+
+        const titleRegex = /^#\s+(.*)$/
+        const match = titleBlock.match(titleRegex)
+
+        return match ? match[1] : 'Page with no title'
     }
 
     private getPageUrl(id: string): string {
@@ -35,17 +52,20 @@ export default class NotionParser implements IParser {
     }
 
     private extractChildrenIds(blocks: string[]): string[] {
-        const linkRegex = /(?<!\!)\[(.*?)\]\((.*?)\)/
+        const idRegex = /([a-f0-9]{32})\.md/gi
 
-        // The id is an 32 chars hex, and is before the .md
-        const idRegex = /([a-f0-9]{32})\.md/i
+        const childrenIds = new Set<string>()
 
-        return blocks
-            .filter(block => linkRegex.test(block))
-            .map(block => {
-                const match = block.match(idRegex)
-                return match ? match[1] : null
-            })
-            .filter((id): id is string => id !== null)
+        for (const block of blocks) {
+            const matches = block.matchAll(idRegex)
+
+            for (const match of matches) {
+                if (match[1]) {
+                    childrenIds.add(match[1])
+                }
+            }
+        }
+
+        return Array.from(childrenIds)
     }
 }
