@@ -8,7 +8,7 @@
     "execute": "tsx src/bootstrap.ts",
     "build": "tsc && node dist/bootstrap.js",
     "compiler": "npx tsc --watch --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +22,8 @@
     "prettier": "^3.8.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.6"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

@@ -2,9 +2,12 @@ import IParser from '../domain/IParser'
 import Page from '../domain/Page'
 
 export default class NotionParser implements IParser {
-    public parse(id: string, content: string): Page {
-        const blocks: string[] = this.extractPageBlocks(content)
+    public parse(filename: string, content: string): Page | null {
+        const id: string | undefined = this.extractIdFromFilename(filename)
+        if (!id)
+            return null
 
+        const blocks: string[] = this.extractPageBlocks(content)
         return {
             id,
             title: this.extractTitleFromBlocks(blocks),
@@ -13,6 +16,10 @@ export default class NotionParser implements IParser {
             childrenIds: this.extractChildrenIds(blocks),
             keywords: []
         }
+    }
+
+    private extractIdFromFilename(path: string): string | undefined {
+        return path.split(' ').at(-1)?.split('.')[0].trim()
     }
 
     private extractPageBlocks(content: string): string[] {

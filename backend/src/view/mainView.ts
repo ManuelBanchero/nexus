@@ -1,10 +1,10 @@
-import { Controller } from '../controller/SearchController.js'
+import { SearchController } from '../controller/SearchController.js'
 import * as readline from 'node:readline/promises'
 import { stdin as input, stdout as output } from 'node:process'
 
 class MainView {
     constructor(
-        private readonly controller: Controller,
+        private readonly controller: SearchController,
         private rl: readline.Interface = readline.createInterface({ input, output })
     ) { }
 
