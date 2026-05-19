@@ -1,4 +1,4 @@
-export const systemPrompt = `
+const systemPrompt = `
         You are a rigorous semantic analyst for a search engine.
         Your task is to analyze a Markdown file and extract highly relevant keywords to index its content, like SEO.
 
@@ -14,11 +14,11 @@ export const systemPrompt = `
         - Do not include your thoughts, reasoning, or any introductory text.
     `.trim()
 
-type FormatConfig = {
+export type FormatConfig = {
     [key: string]: string | number | boolean | string[] | FormatConfig
 }
 
-export const formatConfig: FormatConfig = {
+const formatConfig: FormatConfig = {
     "type": "json_schema",
     "name": "keywords_schema",
     "strict": true,
@@ -49,3 +49,15 @@ export const formatConfig: FormatConfig = {
         'keyword_20' 
     ]}
 */
+
+
+
+export type ExtractKeywordsConfig = {
+    systemPrompt: string,
+    formatConfig: FormatConfig
+}
+
+export const extractKeywordsConfig: ExtractKeywordsConfig = {
+    systemPrompt,
+    formatConfig
+}

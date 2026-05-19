@@ -1,0 +1,20 @@
+import { extractKeywordsConfig, FormatConfig } from './ExtractKeywordsConfig.js'
+import { qaConfig } from './QAConfig.js'
+
+export type OllamaQAConfig = {
+    systemPrompt: string
+}
+
+export type OllamaExtractKeysConfig = {
+    systemPrompt: string,
+    formatConfig: FormatConfig
+}
+
+export const ollamaQAConfig: OllamaQAConfig = {
+    systemPrompt: qaConfig.systemPrompt
+}
+
+export const ollamaExtractKeysConfig: OllamaExtractKeysConfig = {
+    systemPrompt: extractKeywordsConfig.systemPrompt,
+    formatConfig: extractKeywordsConfig.formatConfig
+}
