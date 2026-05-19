@@ -1,4 +1,4 @@
-import IAnswerGenerator from '../domain/IAnswerGenerator.js'
+import IAnswerGenerator from '../../../domain/IAnswerGenerator.js'
 
 export default class OpenAIAnswerGenerator implements IAnswerGenerator {
     constructor(

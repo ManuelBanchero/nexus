@@ -1,4 +1,4 @@
-import IAnswerGenerator from '../domain/IAnswerGenerator.js'
+import IAnswerGenerator from '../../../domain/IAnswerGenerator.js'
 import ollama from 'ollama'
 
 export default class OllamaAnswerGenerator implements IAnswerGenerator {

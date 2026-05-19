@@ -1,4 +1,4 @@
-import IPersistenceManager from '../domain/IPersistenceManager.js'
+import IPersistenceManager from '../../domain/IPersistenceManager.js'
 import fs from 'node:fs/promises'
 
 export default class FileSystemCacheManager implements IPersistenceManager {

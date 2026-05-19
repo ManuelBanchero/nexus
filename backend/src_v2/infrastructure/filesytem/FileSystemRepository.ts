@@ -1,6 +1,6 @@
-import IPageRepository from '../domain/IPageRepository.js'
-import IParser from '../domain/IParser.js'
-import Page from '../domain/Page.js'
+import IPageRepository from '../../domain/IPageRepository.js'
+import IParser from '../../domain/IParser.js'
+import Page from '../../domain/Page.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
