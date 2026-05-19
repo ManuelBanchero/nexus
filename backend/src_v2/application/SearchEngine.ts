@@ -1,9 +1,9 @@
-import IKeywordExtractor from '../domain/IKeywordExtractor'
-import IPageRepository from '../domain/IPageRepository'
-import ISearchIndex from '../domain/ISearchIndex'
-import IPersistenceManager from '../domain/IPersistenceManager'
-import Page from '../domain/Page'
-import Workspace from '../domain/Workspace'
+import IKeywordExtractor from '../domain/IKeywordExtractor.js'
+import IPageRepository from '../domain/IPageRepository.js'
+import ISearchIndex from '../domain/ISearchIndex.js'
+import IPersistenceManager from '../domain/IPersistenceManager.js'
+import Page from '../domain/Page.js'
+import Workspace from '../domain/Workspace.js'
 
 export default class SearchEngine {
     private _workspaceCache: Workspace
@@ -41,21 +41,21 @@ export default class SearchEngine {
         try {
             await this.getCache()
             if (this.workspaceIsEmpty())
-                return new Error('There are not pages on workspace cache')
+                throw new Error('There are not pages on workspace cache')
 
             await this.indexWorkspace()
         } catch (error) {
             console.error(error)
-            return this.returnError(error)
+            this.throwError(error)
         }
     }
 
-    public async retryFailedPages(): Promise<void | Error> {
+    public async retryFailedPages(): Promise<void> {
         const pagesIndexed: string[] = []
         for (const id of this._failedIndexedPages) {
             const page: Page | undefined = this.getPageById(id)
             if (!page)
-                return new Error('The page you are trying to access does not exists')
+                throw new Error('The page you are trying to access does not exists')
 
             try {
                 await this.indexPage(id, page)
@@ -65,7 +65,7 @@ export default class SearchEngine {
             }
         }
 
-        await this.updateWorkspaceCache(this._workspaceCache)
+        await this.updateWorkspaceCache()
         for (const id of pagesIndexed) {
             const index = this._failedIndexedPages.indexOf(id)
             if (index === -1) continue
@@ -83,24 +83,24 @@ export default class SearchEngine {
         this._isIndexed = value
     }
 
-    public async createEngine(): Promise<void | Error> {
+    public async createEngine(): Promise<void> {
         await this.getCache()
 
         if (this.workspaceIsEmpty())
-            return new Error('Workspace has no pages')
+            throw new Error('Workspace has no pages')
 
         if (!this.isWorkspaceIndexed())
-            return new Error('Workspace is not indexed')
+            throw new Error('Workspace is not indexed')
 
         for (const page of this._workspaceCache.pages.values())
             for (const keyword of page.keywords)
                 this.addWordToEngine(keyword, page.id)
     }
 
-    public search(word: string): Page[] | Error {
+    public search(word: string): Page[] {
         const pageIds = this.searchIndex.getWordValues<string>(word)
         if (!pageIds)
-            return new Error(`No results for word: ${word}`)
+            throw new Error(`No results for word: ${word}`)
 
         return this.getPagesById(pageIds)
     }
@@ -113,8 +113,8 @@ export default class SearchEngine {
         PRIVATE METHODS
     */
 
-    private returnError(error: unknown): Error {
-        return error instanceof Error
+    private throwError(error: unknown): never {
+        throw error instanceof Error
             ? error
             : new Error('Unexpected error has ocurred')
     }
@@ -136,7 +136,7 @@ export default class SearchEngine {
 
     private async indexWorkspace() {
         await this.handleIndex()
-        await this.updateWorkspaceCache(this._workspaceCache)
+        await this.updateWorkspaceCache()
         this.setIsIndexed(true)
     }
 
@@ -184,9 +184,10 @@ export default class SearchEngine {
     }
 
     private async getCache(): Promise<Workspace> {
-        const cache = await this.persistenceManager.getCache<Workspace>()
+        const cache = await this.persistenceManager.getCache<Page[]>()
+
         if (!cache) await this.createCache()
-        else this.setWorkspaceCache(cache)
+        else this.addPagesToWorkspace(cache)
 
         return this._workspaceCache
     }
@@ -194,16 +195,11 @@ export default class SearchEngine {
     private async createCache() {
         const pages: Page[] = await this.pageRepository.getPages()
         this.addPagesToWorkspace(pages)
-        await this.persistenceManager.writeCache<Workspace>(this._workspaceCache)
+        await this.persistenceManager.writeCache<Page[]>(pages)
     }
 
-    private setWorkspaceCache(cache: Workspace): void {
-        this._workspaceCache = cache
-    }
-
-    private async updateWorkspaceCache(cache: Workspace): Promise<void> {
-        this._workspaceCache = cache
-        await this.persistenceManager.updateCache<Workspace>(cache)
+    private async updateWorkspaceCache(): Promise<void> {
+        await this.persistenceManager.writeCache<Page[]>(this.PagesMapToArray())
     }
 
     private addPagesToWorkspace(pages: Page[]): void {
@@ -217,6 +213,10 @@ export default class SearchEngine {
         }
 
         return pagesMap
+    }
+
+    private PagesMapToArray(): Page[] {
+        return [...this._workspaceCache.pages.values()]
     }
 
     private addWordToEngine(word: string, pageId: string) {
