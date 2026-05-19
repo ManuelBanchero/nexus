@@ -11,7 +11,7 @@ export default class SearchEngine {
     private _failedIndexedPages: string[]
 
     constructor(
-        private readonly searchIndex: ISearchIndex,
+        private readonly searchIndex: ISearchIndex<string>,
         private readonly keywordExtractor: IKeywordExtractor,
         private readonly pageRepository: IPageRepository,
         private readonly persistenceManager: IPersistenceManager,
@@ -98,7 +98,7 @@ export default class SearchEngine {
     }
 
     public search(word: string): Page[] {
-        const pageIds = this.searchIndex.getWordValues<string>(word)
+        const pageIds = this.searchIndex.getWordValues(word)
         if (!pageIds)
             throw new Error(`No results for word: ${word}`)
 
