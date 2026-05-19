@@ -9,16 +9,20 @@ export default class QAEngine {
         content: string,
         userPrompt: string
     ): AsyncGenerator<string, void, void> {
-        const prompt = `
-        <NOTION PAGE>
-        ${content}
-        </NOTION PAGE>
+        try {
+            const prompt = `
+            <NOTION PAGE>
+            ${content}
+            </NOTION PAGE>
+    
+            <USER PROMPT>
+            ${userPrompt}
+            </USER PROMPT>
+            `
 
-        <USER PROMPT>
-        ${userPrompt}
-        </USER PROMPT>
-        `
-
-        yield* this.answerGenerator.getAnswer(prompt)
+            yield* this.answerGenerator.getAnswer(prompt)
+        } catch (e) {
+            throw new Error('An error has ocurred during the getAnswer stream')
+        }
     }
 }
