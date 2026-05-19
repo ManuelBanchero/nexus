@@ -1,31 +1,33 @@
-class TrieNode {
+import ISearchIndex from "./ISearchIndex.js"
+
+class TrieNode<T> {
     constructor(
-        public children: Record<string, TrieNode> = {},
-        public pageIds: Set<string> = new Set()
+        public children: Record<string, TrieNode<T>> = {},
+        public values: Set<T> = new Set<T>()
     ) { }
 }
 
-class Trie {
+class Trie<T> implements ISearchIndex<T> {
     constructor(
-        private root: TrieNode = new TrieNode()
+        private root: TrieNode<T> = new TrieNode<T>()
     ) { }
 
-    public add(word: string, value: string) {
+    public addWord(word: string, value: T): void {
         let currentLevel = this.root
         const wordLowerCase = word.toLowerCase()
 
         for (const char of wordLowerCase) {
             if (!currentLevel.children[char]) {
-                currentLevel.children[char] = new TrieNode()
+                currentLevel.children[char] = new TrieNode<T>()
             }
 
             currentLevel = currentLevel.children[char]
         }
 
-        currentLevel.pageIds.add(value)
+        currentLevel.values.add(value)
     }
 
-    public exists(word: string) {
+    public wordExists(word: string): boolean {
         let currentlevel = this.root
         const wordLowerCase = word.toLowerCase()
 
@@ -35,10 +37,10 @@ class Trie {
             currentlevel = currentlevel.children[char]
         }
 
-        return currentlevel.pageIds.size > 0
+        return currentlevel.values.size > 0
     }
 
-    public getWordValues(word: string): Set<string> | null {
+    public getWordValues(word: string): Set<T> | null {
         let currentLevel = this.root
         const wordLowerCase = word.toLowerCase()
 
@@ -48,12 +50,12 @@ class Trie {
             currentLevel = currentLevel.children[char]
         }
 
-        return currentLevel.pageIds.size > 0
-            ? currentLevel.pageIds
+        return currentLevel.values.size > 0
+            ? currentLevel.values
             : null
     }
 
-    public wordsWithPrefix(prefix: string) {
+    public wordsWithPrefix(prefix: string): string[] {
         const prefixLowerCase = prefix.toLowerCase()
         const words: string[] = []
         let currentLevel = this.root
@@ -67,11 +69,11 @@ class Trie {
     }
 
     private searchLevel(
-        currentLevel: TrieNode,
+        currentLevel: TrieNode<T>,
         currentPrefix: string,
         words: string[]
     ) {
-        if (currentLevel.pageIds.size > 0)
+        if (currentLevel.values.size > 0)
             words.push(currentPrefix)
 
         const chars = Object.keys(currentLevel.children).sort()
