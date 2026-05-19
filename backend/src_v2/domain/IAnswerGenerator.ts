@@ -1,3 +1,3 @@
 export default interface IAnswerGenerator {
-    getAnswer(context: string, question: string): AsyncGenerator<string, void, void>
+    getAnswer(prompt: string): AsyncGenerator<string, void, void>
 }
