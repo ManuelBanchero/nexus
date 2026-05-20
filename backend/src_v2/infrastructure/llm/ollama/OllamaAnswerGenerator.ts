@@ -12,14 +12,25 @@ export default class OllamaAnswerGenerator implements IAnswerGenerator {
     }
 
     public async *getAnswer(prompt: string): AsyncGenerator<string, void, void> {
-        const stream = await ollama.chat({
-            model: this.model,
-            messages: [...this._messages, { role: 'user', content: prompt }],
-            stream: true
-        })
+        let stream
 
-        for await (const chunk of stream) {
-            yield chunk.message.content
+        try {
+            stream = await ollama.chat({
+                model: this.model,
+                messages: [...this._messages, { role: 'user', content: prompt }],
+                stream: true
+            })
+
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to initialice ollama client'
+            throw new Error(`[LLM Initialization Error] ${message}`)
+        }
+        try {
+            for await (const chunk of stream)
+                yield chunk.message.content
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Connection interrupted during streaming'
+            throw new Error(`[LLM Stream Error] ${message}`)
         }
     }
 
