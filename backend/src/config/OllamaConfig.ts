@@ -16,5 +16,19 @@ export const ollamaQAConfig: OllamaQAConfig = {
 
 export const ollamaExtractKeysConfig: OllamaExtractKeysConfig = {
     systemPrompt: extractKeywordsConfig.systemPrompt,
-    formatConfig: extractKeywordsConfig.formatConfig
+    formatConfig: {
+        type: 'object',
+        properties: {
+            keywords: {
+                type: 'array',
+                items: {
+                    type: 'string'
+                },
+                minItems: 20,
+                maxItems: 20
+            }
+        },
+        required: ['keywords'],
+        additionalProperties: false
+    }
 }

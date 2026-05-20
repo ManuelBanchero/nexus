@@ -26,7 +26,6 @@ type MainParams = {
     provider: string,
     openAIKeywordGeneratorModel: string,
     openAIChatModel: string,
-    ollamaKeywordGeneratorModel: string,
     ollamaChatModel: string
 }
 
@@ -37,7 +36,6 @@ export default async function main({
     provider,
     openAIKeywordGeneratorModel,
     openAIChatModel,
-    ollamaKeywordGeneratorModel,
     ollamaChatModel
 }: MainParams): Promise<AppController> {
     /* LLM PROVIDER FACTORY */
@@ -49,7 +47,7 @@ export default async function main({
                 ollamaQAConfig.systemPrompt,
                 ollamaExtractKeysConfig.systemPrompt,
                 ollamaExtractKeysConfig.formatConfig,
-                ollamaKeywordGeneratorModel
+                ollamaChatModel
             )
 
             llmChatFactory = new OllamaFactory(
@@ -105,6 +103,10 @@ export default async function main({
     const qaEngine: QAEngine = new QAEngine(answerGenerator)
 
     const appController: AppController = new AppController(searchEngine, qaEngine)
+
+    // Verify if the user is trying to index the workspace with ollama
+    if (!appController.isWorkspaceIndexed() && provider === 'ollama')
+        throw new Error('You must not use Ollama for index your workspace. Try using OpenAI or Gemini for example.')
 
     return appController
 }

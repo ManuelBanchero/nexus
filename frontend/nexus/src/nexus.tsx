@@ -13,7 +13,6 @@ export default function Command() {
     const provider = preferences.PROVIDER
     const openAIKeywordGeneratorModel = preferences.OPENAI_KEYWORD_GENERATOR_MODEL
     const openAIChatModel = preferences.OPENAI_CHAT_MODEL
-    const ollamaKeywordGeneratorModel = preferences.OLLAMA_KEYWORD_GENERATOR_MODEL
     const ollamaChatModel = preferences.OLLAMA_CHAT_MODEL
 
     const [controller, setController] = useState<AppController | null>(null)
@@ -36,7 +35,6 @@ export default function Command() {
                     provider,
                     openAIKeywordGeneratorModel,
                     openAIChatModel,
-                    ollamaKeywordGeneratorModel,
                     ollamaChatModel
                 })
                 setController(ctrl)
@@ -44,6 +42,8 @@ export default function Command() {
                 await ctrl.createEngine()
                 setIsIndexed(ctrl.isWorkspaceIndexed())
             } catch (e) {
+                if (!controller && provider === 'ollama') 
+                    return setError(e instanceof Error ? e : new Error('You must not use Ollama for index your workspace. Try using OpenAI or Gemini for example.'))
                 // Get an error because the workspace is not indexed and we can't create the engine
                 if (!controller?.isWorkspaceIndexed())
                     return setIsIndexed(false)
@@ -52,10 +52,9 @@ export default function Command() {
             }
         }
         initSearchEngine()
-    }, [apiKey, workspacePath, cacheFilePath])
+    }, [apiKey, workspacePath, cacheFilePath, provider, openAIKeywordGeneratorModel, openAIChatModel, ollamaChatModel])
 
     if (error) {
-        console.log(error)
         return (
             <List><List.EmptyView title='Error' description={error.message} /></List>
         )
