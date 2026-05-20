@@ -7,7 +7,7 @@ class TrieNode<T> {
     ) { }
 }
 
-class Trie<T> implements ISearchIndex<T> {
+export default class Trie<T> implements ISearchIndex<T> {
     constructor(
         private root: TrieNode<T> = new TrieNode<T>()
     ) { }
@@ -88,5 +88,3 @@ class Trie<T> implements ISearchIndex<T> {
         console.dir(this.root, { depth: null })
     }
 }
-
-export { Trie }
