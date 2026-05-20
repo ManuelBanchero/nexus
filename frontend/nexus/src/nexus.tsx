@@ -29,7 +29,7 @@ export default function Command() {
         hasRun.current = true
         async function initSearchEngine() {
             try {
-                const controller: AppController = await bootstrap({ 
+                const ctrl: AppController = await bootstrap({ 
                     apiKey, 
                     workspacePath, 
                     cacheFilePath,
@@ -38,11 +38,16 @@ export default function Command() {
                     openAIChatModel,
                     ollamaKeywordGeneratorModel,
                     ollamaChatModel
-            })
-
-            setIsIndexed(controller.isWorkspaceIndexed())
-            setController(controller)
+                })
+                setController(ctrl)
+                
+                await ctrl.createEngine()
+                setIsIndexed(ctrl.isWorkspaceIndexed())
             } catch (e) {
+                // Get an error because the workspace is not indexed and we can't create the engine
+                if (!controller?.isWorkspaceIndexed())
+                    return setIsIndexed(false)
+                // Other error could be the workspace is empty, or any other general error
                 setError(e instanceof Error ? e : new Error('Something went wrong'))
             }
         }
@@ -65,6 +70,7 @@ export default function Command() {
     if (!isIndexed) {
         return <IndexWorkspaceScreen 
             controller={controller}
+            provider={provider}
         />
     }
     return <SearchScreen 

@@ -5,11 +5,13 @@ import AppController from '../../../../backend/src/interface/AppController'
 import { Result } from '../../../../backend/src/shared/Result'
 
 type IndexWorkspaceScreenProps = {
-    controller: AppController
+    controller: AppController,
+    provider: string
 }
 
 export default function IndexWorkspaceScreen({
-   controller 
+   controller,
+   provider
 }: IndexWorkspaceScreenProps) {
     const { push } = useNavigation()
 
@@ -20,7 +22,7 @@ export default function IndexWorkspaceScreen({
 
     const alertSettings = {
         title: 'Are you sure?', 
-        message: 'This process will consume OpenAI API Credits.',
+        message: `This process will consume your ${provider.toUpperCase()} API Credits.`,
         primaryAction: {
             title: 'Confirm',
             style: Alert.ActionStyle.Default
