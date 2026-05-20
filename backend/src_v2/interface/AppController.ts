@@ -1,6 +1,7 @@
 import QAEngine from '../application/QAEngine.js'
 import SearchEngine from '../application/SearchEngine.js'
 import Page from '../domain/Page.js'
+import { Result } from '../shared/Result.js'
 
 export default class AppController {
     constructor(
@@ -14,8 +15,12 @@ export default class AppController {
         return this.searchEngine.getWordsWithPrefix(prefix)
     }
 
-    public search(word: string): Page[] {
-        return this.searchEngine.search(word)
+    public search(word: string): Result<Page[]> {
+        try {
+            return { success: true, value: this.searchEngine.search(word) }
+        } catch (error) {
+            return { success: false, error: this.getErrorMessage(error) }
+        }
     }
 
     public getPageChildren(page: Page): Page[] {
@@ -26,12 +31,22 @@ export default class AppController {
         return this.searchEngine.isWorkspaceIndexed()
     }
 
-    public async indexWorkspace(): Promise<void> {
-        this.searchEngine.indexPages()
+    public async indexWorkspace(): Promise<Result<void>> {
+        try {
+            await this.searchEngine.indexPages()
+            return { success: true }
+        } catch (error) {
+            return { success: false, error: this.getErrorMessage(error) }
+        }
     }
 
-    public async createEngine(): Promise<void> {
-        this.searchEngine.createEngine()
+    public async createEngine(): Promise<Result<void>> {
+        try {
+            await this.searchEngine.createEngine()
+            return { success: true }
+        } catch (error) {
+            return { success: false, error: this.getErrorMessage(error) }
+        }
     }
 
     public async setIsIndexed(value: boolean) {
@@ -42,8 +57,13 @@ export default class AppController {
         return this.searchEngine.getNumberOfUnindexedPages()
     }
 
-    public async indexMissingPages(): Promise<void> {
-        this.searchEngine.retryFailedPages()
+    public async indexMissingPages(): Promise<Result<void>> {
+        try {
+            await this.searchEngine.retryFailedPages()
+            return { success: true }
+        } catch (error) {
+            return { success: false, error: this.getErrorMessage(error) }
+        }
     }
 
     /* QA CONTROLLER METHODS */
@@ -53,5 +73,13 @@ export default class AppController {
         userPrompt: string
     ): AsyncGenerator<string, void, void> {
         yield* this.qaEngine.getAnswer(pageContent, userPrompt)
+    }
+
+    /* PRIVATE METHODS */
+
+    private getErrorMessage(error: unknown): string {
+        return error instanceof Error
+            ? error.message
+            : 'Unexpected error'
     }
 }
