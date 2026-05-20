@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { QAController } from '../../../../backend/src/controller/QAController'
 import { Detail, showToast, Toast } from '@raycast/api'
+import AppController from '../../../../backend/src/interface/AppController'
+
 
 type LLMResponseScreenProps = {
-    qaController: QAController | null,
+    controller: AppController
     pageContent: string,
     userPrompt: string
 }
 
 export default function LLMResponseScreen({
-    qaController,
+    controller,
     pageContent,
     userPrompt
 }: LLMResponseScreenProps) {
@@ -35,12 +36,8 @@ export default function LLMResponseScreen({
         })
         try {
             console.log('Getting AI response')
-            if (!qaController) {
-                setError(new Error('QA Controller is null'))
-                return
-            }
 
-            const stream = qaController?.getChatCompletion(pageContent, userPrompt)
+            const stream = controller.getChatCompletion(pageContent, userPrompt)
             for await (const chunk of stream) {
                 setAnswer(prevAnswer => prevAnswer + chunk)
             }
@@ -48,6 +45,8 @@ export default function LLMResponseScreen({
             toast.style = Toast.Style.Success
             toast.title = 'AI has answered successfully'
         } catch (e) {
+            toast.style = Toast.Style.Failure
+            toast.title = 'Error getting AI Answer'
             setError(
                 e instanceof Error
                     ? e

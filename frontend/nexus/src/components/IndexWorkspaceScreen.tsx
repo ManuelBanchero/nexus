@@ -1,15 +1,17 @@
 import { Action, ActionPanel, Icon, List, useNavigation, confirmAlert, Alert, Toast, showToast } from '@raycast/api'
-import { SearchController } from '../../../../backend/src/controller/SearchController'
 import { useState } from 'react'
-import { Response } from '../../../../backend/src/model/types/Response'
 import IndexSucceedScreen from './IndexSucceedScreen'
+import AppController from '../../../../backend/src/interface/AppController'
+import { Result } from '../../../../backend/src/shared/Result'
 
 type IndexWorkspaceScreenProps = {
-    searchController: SearchController | null
+    controller: AppController,
+    provider: string
 }
 
 export default function IndexWorkspaceScreen({
-   searchController 
+   controller,
+   provider
 }: IndexWorkspaceScreenProps) {
     const { push } = useNavigation()
 
@@ -20,7 +22,7 @@ export default function IndexWorkspaceScreen({
 
     const alertSettings = {
         title: 'Are you sure?', 
-        message: 'This process will consume OpenAI API Credits.',
+        message: `This process will consume your ${provider.toUpperCase()} API Credits.`,
         primaryAction: {
             title: 'Confirm',
             style: Alert.ActionStyle.Default
@@ -44,12 +46,10 @@ export default function IndexWorkspaceScreen({
         setIsIndexing(true)
         
         await new Promise(resolve => setTimeout(resolve, 0))
-        if (!searchController)
-            return
-        indexWorkspace(() => searchController.indexWorkspace())
+        indexWorkspace(() => controller.indexWorkspace())
     }
 
-    async function indexWorkspace(indexCallback: () => Promise<Response>) {
+    async function indexWorkspace(indexCallback: () => Promise<Result<void>>) {
         const toast = await showToast({
             style: Toast.Style.Animated,
             title: "Indexing workspace...",
@@ -69,28 +69,26 @@ export default function IndexWorkspaceScreen({
                 return
             }
 
-            searchController?.setIsIndexed(true)
+            controller.setIsIndexed(true)
 
 
             setIsIndexing(false)
             toast.message = ''
 
-            if (searchController) {
-                const amountOfPagesUnindexed = searchController.getNumberOfUnindexedPages()
-                if (amountOfPagesUnindexed > 0) {
-                    toast.style = Toast.Style.Failure
-                    toast.title = 'Not all pages has been indexed successfully'
-                    if (await confirmAlert({ 
-                        title: `It's looks like ${amountOfPagesUnindexed} pages has not been indexed`, 
-                        ...completeIndexAlertSettings})
-                    ) {
-                        // recursivelly runs indexWorkspace until: 1- All pages are indexed. Or 2- The user decides to not index the missing pages
-                        return indexWorkspace(() => searchController.indexMissingPages())
-                    }
-                } else {
-                    toast.style = Toast.Style.Success
-                    toast.title = "Workspace indexed successfully"
+            const amountOfPagesUnindexed = controller.getNumberOfUnindexedPages()
+            if (amountOfPagesUnindexed > 0) {
+                toast.style = Toast.Style.Failure
+                toast.title = 'Not all pages has been indexed successfully'
+                if (await confirmAlert({ 
+                    title: `It's looks like ${amountOfPagesUnindexed} pages has not been indexed`, 
+                    ...completeIndexAlertSettings})
+                ) {
+                    // recursivelly runs indexWorkspace until: 1- All pages are indexed. Or 2- The user decides to not index the missing pages
+                    return indexWorkspace(() => controller.indexMissingPages())
                 }
+            } else {
+                toast.style = Toast.Style.Success
+                toast.title = "Workspace indexed successfully"
             }
 
             setTimeout(() => {

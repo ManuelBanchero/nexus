@@ -1,10 +1,10 @@
 import { Action, ActionPanel, Form, useNavigation } from '@raycast/api'
-import { QAController } from '../../../../backend/src/controller/QAController'
 import { FormValidation, useForm } from '@raycast/utils'
 import LLMResponseScreen from './LLMResponseScreen'
+import AppController from '../../../../backend/src/interface/AppController'
 
 type PromptFormScreenProps = {
-    qaController: QAController | null,
+    controller: AppController
     pageContent: string
 }
 
@@ -13,14 +13,14 @@ interface PromptFormValues {
 }
 
 export default function PromptFormScreen({
-    qaController,
+    controller,
     pageContent
 }: PromptFormScreenProps) {
     const { push } = useNavigation()
     const { handleSubmit, itemProps } = useForm<PromptFormValues>({
         onSubmit(values) {
             push(<LLMResponseScreen 
-                qaController={qaController} 
+                controller={controller}
                 userPrompt={values.prompt}
                 pageContent={pageContent}
             />)

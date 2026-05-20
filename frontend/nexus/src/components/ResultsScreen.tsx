@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Page } from '../../../../backend/src/model/types/Page'
 import { Action, ActionPanel, Icon, List } from '@raycast/api'
-import { SearchController } from '../../../../backend/src/controller/SearchController'
 import PageScreen from './PageScreen'
-import { QAController } from '../../../../backend/src/controller/QAController'
+import AppController from '../../../../backend/src/interface/AppController'
+import Page from '../../../../backend/src/domain/Page'
 
 type ResultsScreenProps = {
-    searchController: SearchController | null,
-    qaController: QAController | null
+    controller: AppController
     word?: string,
     page?: Page
 }
 
 export default function ResultsScreen({
-    searchController,
-    qaController,
+    controller,
     word,
     page
 }: ResultsScreenProps) {
@@ -27,23 +24,19 @@ export default function ResultsScreen({
             setError(new Error('Results Screen must include a word or a page on props'))
             return
         }
-        if (!searchController) {
-            setError(new Error('Controller is undefined'))
-            return
-        }
 
         if (word) {
-           const response = searchController?.search(word)
-            if (response?.success)
-                setPages(response.data.slice(0, 50))
+           const response = controller.search(word)
+            if (response?.success && response.value)
+                setPages(response.value.slice(0, 50))
         } else if (page) {
-            const pageChildren = searchController?.getPageChildren(page)
+            const pageChildren = controller.getPageChildren(page)
             setPages(pageChildren)
         }
 
         setError(null)
         
-    }, [searchController, word])
+    }, [controller, word])
 
     if (error) return (
         <List><List.EmptyView title='Error' description={error.message} /></List>
@@ -81,15 +74,14 @@ export default function ResultsScreen({
                                     title="View Content"
                                     target={<PageScreen 
                                         page={page} 
-                                        qaController={qaController}
+                                        controller={controller}
                                     />}
                                     icon={Icon.Book}
                                 />
                                 <Action.Push 
                                     title="View Page Children"
                                     target={<ResultsScreen 
-                                        searchController={searchController}
-                                        qaController={qaController}
+                                        controller={controller}
                                         page={page}
                                     />}
                                     shortcut={{ modifiers: ['cmd'], key: '.' }}

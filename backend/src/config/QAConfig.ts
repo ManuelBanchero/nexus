@@ -1,4 +1,4 @@
-export const systemPrompt = `
+const systemPrompt = `
 You are a context-grounded AI assistant inside a Raycast extension.
 
 You answer questions based primarily on the provided Notion page content.
@@ -34,3 +34,11 @@ You are given:
 {{USER_PROMPT}}
 </USER_PROMPT>
 `.trim()
+
+export type QAConfig = {
+    systemPrompt: string
+}
+
+export const qaConfig: QAConfig = {
+    systemPrompt
+}

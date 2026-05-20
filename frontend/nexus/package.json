@@ -20,14 +20,6 @@
   ],
   "preferences": [
     {
-      "name": "OPEN_AI_API_KEY",
-      "title": "Open AI - API KEY",
-      "description": "Your private API KEY for the Search Engine.",
-      "type": "password",
-      "required": true,
-      "placeholder": "sk-proj-..."
-    },
-    {
       "name": "WORKSPACE_PATH",
       "title": "Workspace path",
       "description": "The workspace path you are going to index",
@@ -36,11 +28,152 @@
       "placeholder": "Users/your-ursername/your/directory/workspace/path"
     },
     {
-      "name": "LOCAL_AI_ANSWERS",
-      "title": "Get local AI answers",
-      "description": "User preference about AI response locally (Ollama) or external (API KEY)",
-      "type": "checkbox",
-      "required": true
+      "name": "PROVIDER",
+      "title": "LLM Provider",
+      "description": "The llm provider the user is going to use for his app",
+      "type": "dropdown",
+      "required": true,
+      "default": "openai",
+      "data": [
+        {
+          "title": "Ollama (Local)",
+          "value": "ollama"
+        },
+        {
+          "title": "OpenAI",
+          "value": "openai"
+        }
+      ]
+    },
+    {
+      "name": "OPENAI_KEYWORD_GENERATOR_MODEL",
+      "title": "OpenAI Keyword Generator Model",
+      "description": "Select the OpenAI model to use for keyword extraction and structured content analysis.",
+      "type": "dropdown",
+      "required": true,
+      "default": "gpt-5.4-mini",
+      "data": [
+        {
+          "title": "GPT-5.5 (Best Semantic Understanding & Extraction Accuracy)",
+          "value": "gpt-5.5"
+        },
+        {
+          "title": "GPT-5.4 (High Precision Structured Analysis)",
+          "value": "gpt-5.4"
+        },
+        {
+          "title": "GPT-5.4 Mini (Best Balance: Cost, Speed & Extraction Quality)",
+          "value": "gpt-5.4-mini"
+        },
+        {
+          "title": "GPT-5.4 Nano (Ultra Fast & Cheap Keyword Pipelines)",
+          "value": "gpt-5.4-nano"
+        },
+        {
+          "title": "GPT-5 (Advanced Context Understanding)",
+          "value": "gpt-5"
+        },
+        {
+          "title": "GPT-4o Mini (Fast & Cost-Efficient Extraction)",
+          "value": "gpt-4o-mini"
+        },
+        {
+          "title": "GPT-4o (High Performance & Reliable Context Parsing)",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "GPT-4.1 Mini (Excellent Structured Outputs)",
+          "value": "gpt-4.1-mini"
+        },
+        {
+          "title": "GPT-4.1 (Advanced Instruction Following & Analysis)",
+          "value": "gpt-4.1"
+        },
+        {
+          "title": "o3-mini (Reasoning-Optimized Lightweight Analysis)",
+          "value": "o3-mini"
+        },
+        {
+          "title": "o3 (Top-Tier Semantic Reasoning & Deep Analysis)",
+          "value": "o3"
+        }
+      ]
+    },
+    {
+      "name": "OPENAI_CHAT_MODEL",
+      "title": "OpenAI Chat Model",
+      "description": "Select the OpenAI model to use for answering questions based on provided content.",
+      "type": "dropdown",
+      "required": true,
+      "default": "gpt-5.4-mini",
+      "data": [
+        {
+          "title": "GPT-5.5 (Best Overall Intelligence & Answer Quality)",
+          "value": "gpt-5.5"
+        },
+        {
+          "title": "GPT-5.4 (High Accuracy & Professional-Grade Responses)",
+          "value": "gpt-5.4"
+        },
+        {
+          "title": "GPT-5.4 Mini (Best Balance: Cost, Speed & Quality)",
+          "value": "gpt-5.4-mini"
+        },
+        {
+          "title": "GPT-5.4 Nano (Ultra Fast & Cheap for Massive Scale)",
+          "value": "gpt-5.4-nano"
+        },
+        {
+          "title": "GPT-5 (Advanced Reasoning & Long Context)",
+          "value": "gpt-5"
+        },
+        {
+          "title": "GPT-4o (Fast Multimodal General Purpose Model)",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "GPT-4o Mini (Affordable & Reliable for Everyday QA)",
+          "value": "gpt-4o-mini"
+        },
+        {
+          "title": "GPT-4.1 (Strong Structured Responses & Instruction Following)",
+          "value": "gpt-4.1"
+        },
+        {
+          "title": "GPT-4.1 Mini (Efficient RAG & Structured Output Model)",
+          "value": "gpt-4.1-mini"
+        },
+        {
+          "title": "o3 (Top-Tier Deep Reasoning & Semantic Analysis)",
+          "value": "o3"
+        },
+        {
+          "title": "o3-mini (Efficient Advanced Reasoning)",
+          "value": "o3-mini"
+        }
+      ]
+    },
+    {
+      "name": "OLLAMA_CHAT_MODEL",
+      "title": "Ollama Chat Model",
+      "description": "Select the Ollama model to use for answering user questions based on provided content.",
+      "type": "dropdown",
+      "required": true,
+      "default": "ollama3.1",
+      "data": [
+        {
+          "title": "Llama 3.1 8B (Fast & Reliable General-Purpose Assistant)",
+          "value": "llama3.1"
+        }
+      ]
+    },
+    {
+      "name": "API_KEY",
+      "title": "Provider - API KEY",
+      "description": "Your private API KEY for the Search Engine.",
+      "type": "password",
+      "required": true,
+      "placeholder": "sk-proj-..."
     }
   ],
   "dependencies": {
