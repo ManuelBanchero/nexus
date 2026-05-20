@@ -17,6 +17,7 @@ import IPersistenceManager from '../domain/IPersistenceManager.js'
 import SearchEngine from '../application/SearchEngine.js'
 import IAnswerGenerator from '../domain/IAnswerGenerator.js'
 import QAEngine from '../application/QAEngine.js'
+import AppController from '../interface/AppController.js'
 
 type MainParams = {
     apiKey: string,
@@ -32,7 +33,7 @@ export default async function main({
     cacheFilePath,
     provider,
     model
-}: MainParams) {
+}: MainParams): Promise<AppController> {
     /* LLM PROVIDER FACTORY */
     let llmFactory: LLMFactory
     switch (provider) {
@@ -81,4 +82,7 @@ export default async function main({
     )
     const qaEngine: QAEngine = new QAEngine(answerGenerator)
 
+    const appController: AppController = new AppController(searchEngine, qaEngine)
+
+    return appController
 }
