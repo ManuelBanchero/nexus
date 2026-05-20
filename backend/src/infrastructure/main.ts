@@ -104,9 +104,5 @@ export default async function main({
 
     const appController: AppController = new AppController(searchEngine, qaEngine)
 
-    // Verify if the user is trying to index the workspace with ollama
-    if (!appController.isWorkspaceIndexed() && provider === 'ollama')
-        throw new Error('You must not use Ollama for index your workspace. Try using OpenAI or Gemini for example.')
-
     return appController
 }

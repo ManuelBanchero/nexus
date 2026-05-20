@@ -159,51 +159,11 @@
       "description": "Select the Ollama model to use for answering user questions based on provided content.",
       "type": "dropdown",
       "required": true,
-      "default": "qwen3:14b",
+      "default": "ollama3.1",
       "data": [
         {
-          "title": "Qwen3 14B (Best Overall for RAG, QA & Instruction Following)",
-          "value": "qwen3:14b"
-        },
-        {
-          "title": "Qwen2.5 14B (Excellent Context Understanding & Reliable Responses)",
-          "value": "qwen2.5:14b"
-        },
-        {
-          "title": "Qwen2.5 7B (Best Mid-Range Balance for Speed & Quality)",
-          "value": "qwen2.5:7b"
-        },
-        {
-          "title": "Llama 3.3 70B (Highest Quality Answers & Deep Semantic Understanding)",
-          "value": "llama3.3:70b"
-        },
-        {
           "title": "Llama 3.1 8B (Fast & Reliable General-Purpose Assistant)",
-          "value": "llama3.1:8b"
-        },
-        {
-          "title": "Gemma 4 27B (Strong Conversational Quality & Long Context)",
-          "value": "gemma4:27b"
-        },
-        {
-          "title": "Gemma 4 9B (Efficient Chat & Knowledge Base QA)",
-          "value": "gemma4:9b"
-        },
-        {
-          "title": "Phi-4 14B (Efficient Lightweight Reasoning & QA)",
-          "value": "phi4:14b"
-        },
-        {
-          "title": "DeepSeek R1 14B (Advanced Reasoning for Complex Questions)",
-          "value": "deepseek-r1:14b"
-        },
-        {
-          "title": "Mistral Small 24B (Fast High-Quality Instruction Model)",
-          "value": "mistral-small:24b"
-        },
-        {
-          "title": "Mistral 7B (Lightweight Fast Chat Responses)",
-          "value": "mistral:7b"
+          "value": "llama3.1"
         }
       ]
     },

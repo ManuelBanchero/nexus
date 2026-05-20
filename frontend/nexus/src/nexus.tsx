@@ -42,8 +42,6 @@ export default function Command() {
                 await ctrl.createEngine()
                 setIsIndexed(ctrl.isWorkspaceIndexed())
             } catch (e) {
-                if (!controller && provider === 'ollama') 
-                    return setError(e instanceof Error ? e : new Error('You must not use Ollama for index your workspace. Try using OpenAI or Gemini for example.'))
                 // Get an error because the workspace is not indexed and we can't create the engine
                 if (!controller?.isWorkspaceIndexed())
                     return setIsIndexed(false)
@@ -65,6 +63,9 @@ export default function Command() {
             <List><List.EmptyView title='Error uploading the controller' description='' /></List>
         )
     }
+
+    if (!isIndexed && provider === 'ollama')
+        return setError(new Error('You must not use Ollama for index your workspace. Try using OpenAI or Gemini for example.'))
 
     if (!isIndexed) {
         return <IndexWorkspaceScreen 
