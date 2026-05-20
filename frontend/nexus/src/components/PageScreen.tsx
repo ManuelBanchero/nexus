@@ -1,17 +1,17 @@
 import { Action, ActionPanel, Detail, useNavigation } from "@raycast/api"
-import { Page } from "../../../../backend/src/model/types/Page"
-import { QAController } from "../../../../backend/src/controller/QAController"
 import LLMResponseScreen from "./LLMResponseScreen"
 import PromptFormScreen from "./PromptFormScreen"
+import AppController from "../../../../backend/src/interface/AppController"
+import Page from "../../../../backend/src/domain/Page"
 
 type PageScreenProps = {
     page: Page,
-    qaController: QAController | null
+    controller: AppController
 }
 
 export default function PageScreen({
-   page,
-   qaController
+    page,
+    controller
 }: PageScreenProps) {
     const { push } = useNavigation()
 
@@ -26,7 +26,7 @@ export default function PageScreen({
                         title="Summarize Page"
                         shortcut={{ modifiers: ['cmd'], key: 's' }}
                         onAction={() => push(<LLMResponseScreen 
-                            qaController={qaController}
+                            controller={controller}
                             pageContent={page.content}
                             userPrompt='summarize'
                         />)}
@@ -35,7 +35,7 @@ export default function PageScreen({
                         title="Ask AI About This Content"
                         shortcut={{ modifiers: ['shift'], key: 'enter' }}
                         onAction={() => push(<PromptFormScreen 
-                            qaController={qaController}
+                            controller={controller}
                             pageContent={page.content}
                         />)}
                     />

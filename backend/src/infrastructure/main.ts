@@ -24,7 +24,10 @@ type MainParams = {
     workspacePath: string,
     cacheFilePath: string,
     provider: string,
-    model: string
+    openAIKeywordGeneratorModel: string,
+    openAIChatModel: string,
+    ollamaKeywordGeneratorModel: string,
+    ollamaChatModel: string
 }
 
 export default async function main({
@@ -32,26 +35,45 @@ export default async function main({
     workspacePath,
     cacheFilePath,
     provider,
-    model
+    openAIKeywordGeneratorModel,
+    openAIChatModel,
+    ollamaKeywordGeneratorModel,
+    ollamaChatModel
 }: MainParams): Promise<AppController> {
     /* LLM PROVIDER FACTORY */
-    let llmFactory: LLMFactory
+    let llmKeywordFactory: LLMFactory
+    let llmChatFactory: LLMFactory
     switch (provider) {
         case 'ollama':
-            llmFactory = new OllamaFactory(
+            llmKeywordFactory = new OllamaFactory(
                 ollamaQAConfig.systemPrompt,
                 ollamaExtractKeysConfig.systemPrompt,
                 ollamaExtractKeysConfig.formatConfig,
-                model
+                ollamaKeywordGeneratorModel
+            )
+
+            llmChatFactory = new OllamaFactory(
+                ollamaQAConfig.systemPrompt,
+                ollamaExtractKeysConfig.systemPrompt,
+                ollamaExtractKeysConfig.formatConfig,
+                ollamaChatModel
             )
             break
 
         case 'openai':
-            llmFactory = new OpenAIFactory(
+            llmKeywordFactory = new OpenAIFactory(
                 openAIQAConfig.instructions,
                 openAIExtractKeysConfig.instructions,
                 openAIExtractKeysConfig.response_format,
-                model,
+                openAIKeywordGeneratorModel,
+                apiKey
+            )
+
+            llmChatFactory = new OpenAIFactory(
+                openAIQAConfig.instructions,
+                openAIExtractKeysConfig.instructions,
+                openAIExtractKeysConfig.response_format,
+                openAIChatModel,
                 apiKey
             )
             break
@@ -62,7 +84,7 @@ export default async function main({
 
     /* Instances for SearchEngine */
     const trie: ISearchIndex<string> = new Trie<string>()
-    const keywordExtractor: IKeywordExtractor = llmFactory.createKeywordExtractor()
+    const keywordExtractor: IKeywordExtractor = llmKeywordFactory.createKeywordExtractor()
     const notionParser: IParser = new NotionParser()
     const fileSystemRepository: IPageRepository = new FileSystemRepository(
         workspacePath,
@@ -71,7 +93,7 @@ export default async function main({
     const cacheManager: IPersistenceManager = new FileSystemCacheManager(cacheFilePath)
 
     /* Instances for QAEngine */
-    const answerGenerator: IAnswerGenerator = llmFactory.createAnswerGenerator()
+    const answerGenerator: IAnswerGenerator = llmChatFactory.createAnswerGenerator()
 
     /* Application instances */
     const searchEngine: SearchEngine = new SearchEngine(

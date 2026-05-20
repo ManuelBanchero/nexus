@@ -53,7 +53,7 @@ export default class AppController {
         return this.searchEngine.setIsIndexed(value)
     }
 
-    public getNumberOfUnindedexPages(): number {
+    public getNumberOfUnindexedPages(): number {
         return this.searchEngine.getNumberOfUnindexedPages()
     }
 
