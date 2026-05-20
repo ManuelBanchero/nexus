@@ -1,11 +1,11 @@
-import { FormatConfig } from "../../../config/ExtractKeywordsConfig.js"
 import IKeywordExtractor from "../../../domain/IKeywordExtractor.js"
 import type OpenAISDK from 'openai'
+import { ResponseFormatTextJSONSchemaConfig } from "openai/resources/responses/responses.mjs"
 
 export default class OpenAIKeywordExtractor implements IKeywordExtractor {
     constructor(
         private readonly instructions: string,
-        private readonly format: FormatConfig,
+        private readonly schema: ResponseFormatTextJSONSchemaConfig,
         private readonly client: OpenAISDK,
         private readonly model: string
     ) { }
@@ -16,7 +16,9 @@ export default class OpenAIKeywordExtractor implements IKeywordExtractor {
                 model: this.model,
                 instructions: this.instructions,
                 input: content,
-                text: this.format
+                text: {
+                    format: this.schema
+                }
             })
 
             const parsedData = JSON.parse(response.output_text)

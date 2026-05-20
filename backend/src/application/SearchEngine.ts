@@ -180,6 +180,7 @@ export default class SearchEngine {
                     try {
                         await this.indexPage(key, page)
                     } catch (error) {
+                        console.error(error instanceof Error ? error.message : 'Error')
                         console.log(`❌ An error has ocurred trying to index page with id ${page.id}`)
                         this.addToFailedIndexedPages(page.id)
                     }

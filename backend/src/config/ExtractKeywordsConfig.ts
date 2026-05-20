@@ -19,9 +19,6 @@ export type FormatConfig = {
 }
 
 const formatConfig: FormatConfig = {
-    "type": "json_schema",
-    "name": "keywords_schema",
-    "strict": true,
     "schema": {
         "type": "object",
         "properties": {
