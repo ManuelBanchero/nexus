@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { List, getPreferenceValues, environment } from '@raycast/api'
 import path from 'node:path'
 import IndexWorkspaceScreen from './components/IndexWorkspaceScreen'
-import bootstrap from '../../../backend/src/infrastructure/main'
+import bootstrap from '../../../backend/src/infrastructure/raycast/main'
 import AppController from '../../../backend/src/interface/raycast/RaycastController'
 
 export default function Command() {
