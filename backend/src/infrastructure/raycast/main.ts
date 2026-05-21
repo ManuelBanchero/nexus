@@ -102,6 +102,7 @@ export default async function main({
     )
     const qaEngine: QAEngine = new QAEngine(answerGenerator)
 
+    /* Interface controllers instances */
     const appController: AppController = new AppController(searchEngine, qaEngine)
 
     return appController
