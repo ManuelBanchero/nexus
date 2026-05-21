@@ -1,7 +1,7 @@
-import QAEngine from '../application/QAEngine.js'
-import SearchEngine from '../application/SearchEngine.js'
-import Page from '../domain/Page.js'
-import { Result } from '../shared/Result.js'
+import QAEngine from '../../application/QAEngine.js'
+import SearchEngine from '../../application/SearchEngine.js'
+import Page from '../../domain/Page.js'
+import { Result } from '../../shared/Result.js'
 
 export default class AppController {
     constructor(

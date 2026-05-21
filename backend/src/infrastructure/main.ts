@@ -17,7 +17,7 @@ import IPersistenceManager from '../domain/IPersistenceManager.js'
 import SearchEngine from '../application/SearchEngine.js'
 import IAnswerGenerator from '../domain/IAnswerGenerator.js'
 import QAEngine from '../application/QAEngine.js'
-import AppController from '../interface/AppController.js'
+import AppController from '../interface/raycast/RaycastController.js'
 
 type MainParams = {
     apiKey: string,
