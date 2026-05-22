@@ -14,6 +14,8 @@ export default function Command() {
     const openAIKeywordGeneratorModel = preferences.OPENAI_KEYWORD_GENERATOR_MODEL
     const openAIChatModel = preferences.OPENAI_CHAT_MODEL
     const ollamaChatModel = preferences.OLLAMA_CHAT_MODEL
+    const geminiChatModel = preferences.GEMINI_CHAT_MODEL
+    const geminiKeywordGeneratorModel = preferences.GEMINI_KEYWORD_MODEL
 
     const [controller, setController] = useState<AppController | null>(null)
     const [isIndexed, setIsIndexed] = useState<boolean>(true)
@@ -35,7 +37,9 @@ export default function Command() {
                     provider,
                     openAIKeywordGeneratorModel,
                     openAIChatModel,
-                    ollamaChatModel
+                    ollamaChatModel,
+                    geminiKeywordGeneratorModel,
+                    geminiChatModel
                 })
                 setController(ctrl)
                 

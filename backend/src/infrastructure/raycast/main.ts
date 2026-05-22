@@ -95,7 +95,7 @@ export default async function main({
                 geminiQAConfig.systemPrompt,
                 geminiExtractKeysConfig.systemPrompt,
                 geminiExtractKeysConfig.formatConfig,
-                geminiKeywordGeneratorModel,
+                geminiChatModel,
                 apiKey
             )
             break

@@ -154,6 +154,106 @@
       ]
     },
     {
+      "name": "GEMINI_CHAT_MODEL",
+      "title": "Gemini Chat Model",
+      "description": "Select the Gemini model to use for answering user questions based on provided content.",
+      "type": "dropdown",
+      "required": true,
+      "default": "gemini-2.5-flash",
+      "data": [
+        {
+          "title": "Gemini 2.5 Pro (Best Overall Intelligence & Deep Reasoning)",
+          "value": "gemini-2.5-pro"
+        },
+        {
+          "title": "Gemini 2.5 Flash (Best Balance: Speed, Cost & QA Quality)",
+          "value": "gemini-2.5-flash"
+        },
+        {
+          "title": "Gemini 2.5 Flash Lite (Ultra Fast & Cost-Efficient Responses)",
+          "value": "gemini-2.5-flash-lite"
+        },
+        {
+          "title": "Gemini 2.0 Flash (Reliable General-Purpose Conversational Model)",
+          "value": "gemini-2.0-flash"
+        },
+        {
+          "title": "Gemini 2.0 Flash Lite (Lightweight High-Speed Assistant)",
+          "value": "gemini-2.0-flash-lite"
+        },
+        {
+          "title": "Gemini 1.5 Pro (Excellent Long Context & Knowledge Base QA)",
+          "value": "gemini-1.5-pro"
+        },
+        {
+          "title": "Gemini 1.5 Flash (Fast Contextual Responses & RAG Workflows)",
+          "value": "gemini-1.5-flash"
+        },
+        {
+          "title": "Gemma 3 27B (Open Model Optimized for Conversational QA)",
+          "value": "gemma-3-27b-it"
+        },
+        {
+          "title": "Gemma 3 12B (Balanced Open Model for RAG & Assistant Tasks)",
+          "value": "gemma-3-12b-it"
+        },
+        {
+          "title": "Gemma 3 4B (Lightweight Fast Conversational Model)",
+          "value": "gemma-3-4b-it"
+        }
+      ]
+    },
+    {
+      "name": "GEMINI_KEYWORD_MODEL",
+      "title": "Gemini Keyword Extraction Model",
+      "description": "Select the Gemini model to use for keyword extraction and structured content analysis.",
+      "type": "dropdown",
+      "required": true,
+      "default": "gemini-2.5-flash",
+      "data": [
+        {
+          "title": "Gemini 2.5 Pro (Best Semantic Understanding & Structured Extraction)",
+          "value": "gemini-2.5-pro"
+        },
+        {
+          "title": "Gemini 2.5 Flash (Best Balance: Cost, Speed & Extraction Quality)",
+          "value": "gemini-2.5-flash"
+        },
+        {
+          "title": "Gemini 2.5 Flash Lite (Ultra Fast & Cheap Keyword Pipelines)",
+          "value": "gemini-2.5-flash-lite"
+        },
+        {
+          "title": "Gemini 2.0 Flash (Reliable Structured Output & JSON Generation)",
+          "value": "gemini-2.0-flash"
+        },
+        {
+          "title": "Gemini 2.0 Flash Lite (Efficient Lightweight Extraction)",
+          "value": "gemini-2.0-flash-lite"
+        },
+        {
+          "title": "Gemini 1.5 Pro (Excellent Long Context Analysis & Topic Extraction)",
+          "value": "gemini-1.5-pro"
+        },
+        {
+          "title": "Gemini 1.5 Flash (Fast Semantic Analysis & Retrieval Workflows)",
+          "value": "gemini-1.5-flash"
+        },
+        {
+          "title": "Gemma 3 27B (Open Model with Strong Structured Output Performance)",
+          "value": "gemma-3-27b-it"
+        },
+        {
+          "title": "Gemma 3 12B (Balanced Open Model for Semantic Extraction)",
+          "value": "gemma-3-12b-it"
+        },
+        {
+          "title": "Gemma 3 4B (Lightweight Local Keyword Extraction)",
+          "value": "gemma-3-4b-it"
+        }
+      ]
+    },
+    {
       "name": "OLLAMA_CHAT_MODEL",
       "title": "Ollama Chat Model",
       "description": "Select the Ollama model to use for answering user questions based on provided content.",
