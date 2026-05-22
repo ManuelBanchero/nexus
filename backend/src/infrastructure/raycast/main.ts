@@ -18,6 +18,8 @@ import SearchEngine from '../../application/SearchEngine.js'
 import IAnswerGenerator from '../../domain/IAnswerGenerator.js'
 import QAEngine from '../../application/QAEngine.js'
 import AppController from '../../interface/raycast/RaycastController.js'
+import GeminiFactory from '../llm/factories/GeminiFactory.js'
+import { geminiExtractKeysConfig, geminiQAConfig, GeminiQAConfig } from '../../config/GeminiConfig.js'
 
 type MainParams = {
     apiKey: string,
@@ -26,7 +28,9 @@ type MainParams = {
     provider: string,
     openAIKeywordGeneratorModel: string,
     openAIChatModel: string,
-    ollamaChatModel: string
+    ollamaChatModel: string,
+    geminiKeywordGeneratorModel: string,
+    geminiChatModel: string
 }
 
 export default async function main({
@@ -36,7 +40,9 @@ export default async function main({
     provider,
     openAIKeywordGeneratorModel,
     openAIChatModel,
-    ollamaChatModel
+    ollamaChatModel,
+    geminiKeywordGeneratorModel,
+    geminiChatModel
 }: MainParams): Promise<AppController> {
     /* LLM PROVIDER FACTORY */
     let llmKeywordFactory: LLMFactory
@@ -72,6 +78,24 @@ export default async function main({
                 openAIExtractKeysConfig.instructions,
                 openAIExtractKeysConfig.response_format,
                 openAIChatModel,
+                apiKey
+            )
+            break
+
+        case 'gemini':
+            llmKeywordFactory = new GeminiFactory(
+                geminiQAConfig.systemPrompt,
+                geminiExtractKeysConfig.systemPrompt,
+                geminiExtractKeysConfig.formatConfig,
+                geminiKeywordGeneratorModel,
+                apiKey
+            )
+
+            llmChatFactory = new GeminiFactory(
+                geminiQAConfig.systemPrompt,
+                geminiExtractKeysConfig.systemPrompt,
+                geminiExtractKeysConfig.formatConfig,
+                geminiKeywordGeneratorModel,
                 apiKey
             )
             break

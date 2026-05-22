@@ -1,7 +1,7 @@
 import IKeywordExtractor from '../../../domain/IKeywordExtractor.js'
 import { GoogleGenAI, Schema } from '@google/genai'
 
-export default class GeminiKeywordGenerator implements IKeywordExtractor {
+export default class GeminiKeywordExtractor implements IKeywordExtractor {
     constructor(
         private readonly instructions: string,
         private readonly schema: Schema,
@@ -32,7 +32,7 @@ export default class GeminiKeywordGenerator implements IKeywordExtractor {
                 return parsedData.keywords
             }
 
-            throw new Error('The returned JSON does not match with the expected format')
+            throw new SyntaxError('The returned JSON does not match with the expected format')
         } catch (error) {
             if (error instanceof Error)
                 throw new Error(error.message)

@@ -27,11 +27,11 @@ export type GeminiExtractKeysConfig = {
     formatConfig: Schema
 }
 
-export const GeminiQAConfig: GeminiQAConfig = {
+export const geminiQAConfig: GeminiQAConfig = {
     systemPrompt: qaConfig.systemPrompt
 }
 
-export const GeminiExtractKeysConfig: GeminiExtractKeysConfig = {
+export const geminiExtractKeysConfig: GeminiExtractKeysConfig = {
     systemPrompt: extractKeywordsConfig.systemPrompt,
     formatConfig: schema
 }

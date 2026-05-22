@@ -17,7 +17,7 @@ export default class OpenAIFactory extends LLMFactory {
         private readonly apiKey: string
     ) {
         super()
-        this.client = new OpenAISDK({ apiKey, maxRetries: 0, timeout: 15000 })
+        this.client = new OpenAISDK({ apiKey: this.apiKey, maxRetries: 0, timeout: 15000 })
     }
 
     public createAnswerGenerator(): IAnswerGenerator {
