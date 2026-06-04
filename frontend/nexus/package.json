@@ -42,6 +42,10 @@
         {
           "title": "OpenAI",
           "value": "openai"
+        },
+        {
+          "title": "Gemini",
+          "value": "gemini"
         }
       ]
     },
