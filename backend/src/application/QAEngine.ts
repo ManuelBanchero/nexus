@@ -22,7 +22,7 @@ export default class QAEngine {
 
             yield* this.answerGenerator.getAnswer(prompt)
         } catch (e) {
-            throw new Error('An error has ocurred during the getAnswer stream')
+            throw e instanceof Error ? e : new Error('An error has ocurred during the getAnswer stream')
         }
     }
 }
