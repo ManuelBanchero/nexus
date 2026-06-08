@@ -37,6 +37,15 @@ I built a semantic search engine that indexes all my Notion notes, extracts keyw
 
 ---
 
+## Nexus demo Part 1
+
+<video width="640" controls>
+  <source src="nexus-demo-part-1.mp4" type="video/mp4">
+  Tu navegador no soporta la reproducción de video.
+</video>
+
+---
+
 ## Features
 
 |      | Component       | Details                              |
