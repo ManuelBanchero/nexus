@@ -7,7 +7,7 @@
 
 # NEXUS
 
-<em>Unlocking innovation, powering your project to success.</em>
+<em>Search Engine for Notion</em>
 
 <!-- BADGES -->
 <img src="https://img.shields.io/github/license/ManuelBanchero/nexus?style=default&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
@@ -27,11 +27,9 @@
 
 ## Overview
 
-**nexus: Streamlining Development Across Backend and Frontend**
-
 **Why nexus?**
 
-This project simplifies dependency management, enhances code quality, and integrates AI seamlessly into backend and frontend projects. The core features include:
+I built a semantic search engine that indexes all my Notion notes, extracts keywords using AI, and enables complex natural-language queries with autocomplete (Like Google).
 
 - **🔍 Lockfile Management:** Ensures precise dependency versions for backend and frontend consistency.
 - **🚀 Structured React Components:** Facilitates efficient search engine functionality in frontend applications.
